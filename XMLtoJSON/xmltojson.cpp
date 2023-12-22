@@ -3,6 +3,7 @@
 #include "./rapidjson/stringbuffer.h"
 #include "./tinyxml2.cpp"
 #include <string>
+#include <fstream>
 
 using namespace std;
 
@@ -63,4 +64,12 @@ string xmlToJson(string xmlString) {
     rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
     jsonDoc.Accept(writer);
     return buffer.GetString();
+}
+
+void save_file(string fileContent, string filePath) {
+    std::ofstream outfile(filePath);
+    if (outfile.is_open()) {
+        outfile << fileContent;
+        outfile.close();
+    }
 }
