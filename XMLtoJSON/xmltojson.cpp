@@ -29,7 +29,17 @@ void processXmlElement(const tinyxml2::XMLElement* element, rapidjson::Value& js
         if (node->ToElement()) {
             rapidjson::Value childElement(rapidjson::kObjectType);
             processXmlElement(node->ToElement(), childElement, allocator);
-            jsonElement.AddMember(rapidjson::Value().SetString(node->ToElement()->Name(), allocator), childElement, allocator);
+
+            // Check if the key already exists, if it does, convert it to an array
+            if (jsonElement.HasMember(node->ToElement()->Name())) {
+                if (!jsonElement[node->ToElement()->Name()].IsArray()) {
+                    rapidjson::Value existingElement(jsonElement[node->ToElement()->Name()], allocator);
+                    jsonElement[node->ToElement()->Name()].SetArray().PushBack(existingElement, allocator);
+                }
+                jsonElement[node->ToElement()->Name()].PushBack(childElement, allocator);
+            } else {
+                jsonElement.AddMember(rapidjson::Value().SetString(node->ToElement()->Name(), allocator), childElement, allocator);
+            }
         }
     }
 }
