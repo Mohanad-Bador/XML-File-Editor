@@ -36,6 +36,7 @@ vector<User *> XMLParser ::parseXML(string filepath)
             else if(opentag=="follower")
             {
                 User * user =new User;
+                user->id=getTagValue(xml_vector[++i]);
                 fstack.push(user);
             }
             else if(opentag=="body")
@@ -92,14 +93,4 @@ vector<User *> XMLParser ::parseXML(string filepath)
 XMLParser::~XMLParser()
 {
 
-}
-int main()
-{
-  XMLParser parser;
-  vector<User*> users =parser.parseXML("sample.xml");
-  for(int i=0;i<users.size();i++)
-  {
-    users[i]->print_user();
-  }
-  return 0;
 }

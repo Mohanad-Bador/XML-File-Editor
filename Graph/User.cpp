@@ -17,7 +17,7 @@ void User :: print_user()
    for(int i=0;i<this->posts.size();i++)
    {
       cout<<"Post Body" << " " <<this->posts[i]->body<<endl;
-      for(int j=0;j<this->posts[i]->topics.size();i++)
+      for(int j=0;j<this->posts[i]->topics.size();j++)
       {
         cout<<"Topic" << " " <<this->posts[i]->topics[j]<<endl;
       }
