@@ -13,15 +13,33 @@ using namespace std;
     NOT FOR USE
 */
 void processXmlElement(const tinyxml2::XMLElement* element, rapidjson::Value& jsonElement, rapidjson::Document::AllocatorType& allocator) {
-    // iterate over tag attributes
-    for (const tinyxml2::XMLAttribute* attribute = element->FirstAttribute(); attribute != nullptr; attribute = attribute->Next()) {
-        jsonElement.AddMember(rapidjson::Value().SetString(attribute->Name(), allocator), rapidjson::Value().SetString(attribute->Value(), allocator), allocator);
-    }
-
     // handle text content
     const char* text = element->GetText();
     if (text) {
-        jsonElement.AddMember(rapidjson::Value().SetString("text", allocator), rapidjson::Value().SetString(text, allocator), allocator);
+        // Try to convert text values to various types
+        try {
+            // Try converting to integer
+            int intValue = std::stoi(text);
+            jsonElement.AddMember(rapidjson::Value().SetString(element->Name(), allocator), rapidjson::Value().SetInt(intValue), allocator);
+        } catch (std::invalid_argument&) {
+            try {
+                // Try converting to float
+                float floatValue = std::stof(text);
+                jsonElement.AddMember(rapidjson::Value().SetString(element->Name(), allocator), rapidjson::Value().SetFloat(floatValue), allocator);
+            } catch (std::invalid_argument&) {
+                // Try converting to boolean
+                if (strcasecmp(text, "true") == 0 || strcasecmp(text, "false") == 0) {
+                    bool boolValue = (strcasecmp(text, "true") == 0);
+                    jsonElement.AddMember(rapidjson::Value().SetString(element->Name(), allocator), rapidjson::Value().SetBool(boolValue), allocator);
+                } else if (strcasecmp(text, "null") == 0) {
+                    // Treat "null" as a null value
+                    jsonElement.AddMember(rapidjson::Value().SetString(element->Name(), allocator), rapidjson::Value().SetNull(), allocator);
+                } else {
+                    // If all conversions fail, treat it as a string
+                    jsonElement.AddMember(rapidjson::Value().SetString(element->Name(), allocator), rapidjson::Value().SetString(text, allocator), allocator);
+                }
+            }
+        }
     }
 
     // recursion
@@ -30,19 +48,22 @@ void processXmlElement(const tinyxml2::XMLElement* element, rapidjson::Value& js
             rapidjson::Value childElement(rapidjson::kObjectType);
             processXmlElement(node->ToElement(), childElement, allocator);
 
-            // Check if the key already exists, if it does, convert it to an array
-            if (jsonElement.HasMember(node->ToElement()->Name())) {
-                if (!jsonElement[node->ToElement()->Name()].IsArray()) {
-                    rapidjson::Value existingElement(jsonElement[node->ToElement()->Name()], allocator);
-                    jsonElement[node->ToElement()->Name()].SetArray().PushBack(existingElement, allocator);
+            // Convert it to an array if the key already exists
+            if (jsonElement.HasMember(element->Name())) {
+                if (!jsonElement[element->Name()].IsArray()) {
+                    rapidjson::Value existingElement(jsonElement[element->Name()], allocator);
+                    jsonElement[element->Name()].SetArray().PushBack(existingElement, allocator);
                 }
-                jsonElement[node->ToElement()->Name()].PushBack(childElement, allocator);
+                jsonElement[element->Name()].PushBack(childElement, allocator);
             } else {
-                jsonElement.AddMember(rapidjson::Value().SetString(node->ToElement()->Name(), allocator), childElement, allocator);
+                // Add childElement directly if it's not an array
+                jsonElement.AddMember(rapidjson::Value().SetString(element->Name(), allocator), childElement, allocator);
             }
         }
     }
 }
+
+
 
 
 
@@ -76,6 +97,11 @@ string xmlToJson(string xmlString) {
     return buffer.GetString();
 }
 
+/*
+    Saves string into a file
+    @param fileContent the file's text content
+    @param filePath saving path
+*/
 void save_file(string fileContent, string filePath) {
     std::ofstream outfile(filePath);
     if (outfile.is_open()) {
