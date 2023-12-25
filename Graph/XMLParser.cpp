@@ -4,6 +4,8 @@
 #include "Functions.h"
 #include "User.h"
 #include "Post.h"
+#include "Graph.h"
+
 
 XMLParser::XMLParser()
 {
@@ -68,6 +70,7 @@ vector<User *> XMLParser ::parseXML(string filepath)
             {
                 User * user=nstack.top();
                 users.push_back(user);
+                //graph.addUser(user);
                 nstack.pop();
             }
              if(closedtag=="post")
@@ -79,16 +82,14 @@ vector<User *> XMLParser ::parseXML(string filepath)
             if(closedtag=="follower")
             {
                 User * user=fstack.top();
-                nstack.top()->followers.push_back(user);
+                nstack.top()->addFollower(user);
                 fstack.pop();
             }
         }
-
-
     }
     return users;
 
-   
+
 }
 XMLParser::~XMLParser()
 {

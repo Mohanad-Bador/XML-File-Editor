@@ -8,11 +8,11 @@ User::User()
 }
 void User :: print_user()
 {
-   cout<<"ID" << " " <<this->id<<endl; 
-   cout<<"Name" << " " <<this->name<<endl; 
+   cout<<"ID: " << " " <<this->id<<endl;
+   cout<<"Name:" << " " <<this->name<<endl;
    for(int i=0;i<this->followers.size();i++)
    {
-    cout<<"Follower" << i << this->followers[i]->id<<endl;
+    cout<<"Follower: "<< this->followers[i]->id<<endl;
    }
    for(int i=0;i<this->posts.size();i++)
    {
@@ -22,10 +22,13 @@ void User :: print_user()
         cout<<"Topic" << " " <<this->posts[i]->topics[j]<<endl;
       }
    }
-   
+
 }
 
-User::~User()
-{
+User::~User() {}
 
+User::User(const string& id, const string& name) : id(id), name(name) {}
+
+void User::addFollower(User* follower) {
+    followers.push_back(follower);
 }
