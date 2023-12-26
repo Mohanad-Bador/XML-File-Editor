@@ -37,21 +37,28 @@ void TreeNode::add_child(const char* name, const char* value) {
 
 class Tree
 {
+    TreeNode* rootnode;
 private:
     
 public:
-    TreeNode* root;
+    TreeNode* root();
     Tree(TreeNode* root);
     ~Tree();
+    bool empty();
 };
 
 
 Tree::Tree(TreeNode* root)
 {
-    this->root = root;
+    this->rootnode = rootnode;
 }
 
 Tree::~Tree()
 {
-    delete root;
+    delete rootnode;
+}
+
+TreeNode* Tree::root()
+{
+    return this->rootnode;
 }
