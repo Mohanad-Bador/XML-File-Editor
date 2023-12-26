@@ -78,14 +78,23 @@ string getClosedTag(string t)
         return "False";
 }
 
-string getTagValue(string t)
-{
+string getTagValue(string t) {
     int start = -1;
     int end = -1;
     start = t.find(">", 0);
-    end = t.find("/", start);
-    if (start != -1)
-        return t.substr(start + 1, end - start - 2);
+    end = t.find("<", start);
+    if (start != -1 && end != -1) {
+        string value = t.substr(start + 1, end - start - 1);
+        // Trim any leading or trailing whitespaces
+        value.erase(value.begin(), find_if(value.begin(), value.end(), [](unsigned char ch) {
+            return !isspace(ch);
+        }));
+        value.erase(find_if(value.rbegin(), value.rend(), [](unsigned char ch) {
+            return !isspace(ch);
+        }).base(), value.end());
+        return value;
+    }
     else
         return "False";
 }
+
