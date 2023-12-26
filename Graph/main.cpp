@@ -16,11 +16,11 @@ int main()
         users[i]->print_user();
     }
 
-    Graph userGraph(users.size());
+    Graph userGraph(users.size(),users);
 
-    userGraph.buildGraph(users);
+    userGraph.buildGraph();
 
-    // Print the adjacency list
+     //Print the adjacency list
     userGraph.printAdjacencyList();
 
     userGraph.findMostInfluentialUser();
@@ -28,6 +28,7 @@ int main()
     userGraph.findMostActiveUser();
 
     userGraph.findMutualFollowers("2","3");
+    userGraph.suggest_followers("1");
 
 /*
     // Create a Graph instance

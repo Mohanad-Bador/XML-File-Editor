@@ -11,26 +11,29 @@ using namespace std;
 
 class Graph {
 private:
+    vector<User*> users;
     vector<vector<User*>> adjList;
+
 
 public:
     Graph();
 
-    Graph(int numVertices);
+    Graph(int numVertices,vector<User*> users);
 
     void addEdge(User* u, User* v);
 
     void printAdjacencyList() const;
 
-    void buildGraph(const vector<User*>& users);
+    void buildGraph();
 
-    User* findMostInfluentialUser() const;
+    User* findMostInfluentialUser();
 
-    User* getUserById(const string& userId) const;
+    User* getUserById(const string &userid );
 
     User* findMostActiveUser();
 
     vector<User*> findMutualFollowers(const string& ID1, const string& ID2);
+    vector<User*> suggest_followers(string id);
 };
 
 #endif
