@@ -101,13 +101,13 @@ string generate_json(TreeNode* root, Tree* tree, vector<string> array_names) {
 
     // base case
     if (root->get_children().empty()) {
-        json += '\"';
         if (root->get_datatype() == INT) {
             json += to_string(root->get_int());
         } else {
+            json += '\"';
             json += root->get_string();
+            json += '\"';
         }
-        json += '\"';
         return json;
     } else {
         child_flag = false;

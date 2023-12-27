@@ -1,7 +1,7 @@
 #include <vector>
 #include <iostream>
 #include <string>
-#define OMAR_DEBUG true
+#define OMAR_DEBUG false
 enum tree_data_type {
     INT, TEXT, NODATA
 };
