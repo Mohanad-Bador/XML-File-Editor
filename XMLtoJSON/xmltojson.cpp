@@ -1,7 +1,6 @@
 #include "xmltojson.h"
 
-/// TODO: description
-string tree_to_json(Tree* xml_tree) {
+static string tree_to_json(Tree* xml_tree) {
     string json;
     TreeNode* json_cursor;
 
@@ -30,8 +29,7 @@ string tree_to_json(Tree* xml_tree) {
 }
 
 
-/// TODO: description
-vector<string> json_arrays(TreeNode* root, vector<string>& arrays) {
+static vector<string> json_arrays(TreeNode* root, vector<string>& arrays) {
     if (root->get_children().empty()) {
         return arrays;
     }
@@ -59,8 +57,7 @@ vector<string> json_arrays(TreeNode* root, vector<string>& arrays) {
 }
 
 
-/// TODO: description
-string generate_json(TreeNode* root, Tree* tree, vector<string> array_names) {
+static string generate_json(TreeNode* root, Tree* tree, vector<string> array_names) {
     // return "debug: disabled generate_json()";
     bool extra_bracket = false;
     string json;
@@ -137,10 +134,43 @@ string generate_json(TreeNode* root, Tree* tree, vector<string> array_names) {
     return json;
 }
 
-bool isArray(TreeNode* node, vector<string> array_names) {
+static bool isArray(TreeNode* node, vector<string> array_names) {
     for (int i = 0; i < array_names.size(); i++) {
         if (array_names[i] == node->get_name())
             return true;
     }
     return false;
+}
+
+static string read_file(const string& filePath) {
+    // Open the file
+    ifstream file(filePath);
+
+    // Check if the file is open
+    if (!file.is_open()) {
+        cerr << "Error: Unable to open file '" << filePath << "'" << endl;
+        return ""; // Return an empty string to indicate an error
+    }
+
+    // Read the file content into a stringstream
+    stringstream buffer;
+    buffer << file.rdbuf();
+
+    // Close the file
+    file.close();
+
+    // Return the content as a string
+    return buffer.str();
+}
+
+
+string convert_to_json(string xml_path) {
+    string xml_content = read_file(xml_path);
+    regex pattern("<(.*)>(.*)</\\1>");
+    string expanded_xml = regex_replace(xml_content, pattern, "<$1>\n$2\n</$1>");
+    Tree* xml_tree = new Tree();
+    xml_to_tree(expanded_xml, xml_tree);
+    string json = tree_to_json(xml_tree);
+    delete xml_tree;
+    return json;
 }

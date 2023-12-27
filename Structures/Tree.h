@@ -120,7 +120,7 @@ public:
     int level;
     TreeNode* node_cursor;
     TreeNode* get_root();
-    void set_root(TreeNode* root); // TODO: implement
+    void set_root(TreeNode* root);
     Tree();
     ~Tree();
     bool is_empty();
