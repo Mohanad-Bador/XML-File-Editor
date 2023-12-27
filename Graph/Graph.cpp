@@ -19,6 +19,7 @@ void Graph::addEdge(User* u, User* v) {
 }
 
 void Graph::printAdjacencyList() const {
+    cout<<"Adjacency list of this graph:"<<endl;
     for (int i = 1; i < adjList.size(); ++i) {
         cout << "User ID " << i << " -> ";
         for (const User* user : adjList[i]) {
@@ -61,7 +62,7 @@ User* Graph::findMostInfluentialUser() {
             maxFollowers = followersCount;
         }
     }
-    cout << "The most influential user is: " <<mostInfluentialUser->id<<endl;
+    cout << "The most influential user is: " <<mostInfluentialUser->name<<" ID: "<<mostInfluentialUser->id<<endl;
     return mostInfluentialUser;
 }
 
@@ -88,8 +89,9 @@ User* Graph::findMostActiveUser()
             max_loc = i;
         }
     }
-    cout << "The most active user is: " <<max_loc<<endl;
-    return getUserById(to_string(max_loc));
+    User* mostActiveUser = getUserById(to_string(max_loc));
+    cout << "The most active user is: " <<mostActiveUser->name<<" ID: "<<max_loc<<endl;
+    return mostActiveUser;
 }
 
 
@@ -97,23 +99,6 @@ vector<User*> Graph::findMutualFollowers(const string& ID1, const string& ID2)
 {
     User* user1 = getUserById(ID1);
     User* user2 = getUserById(ID2);
-
-    // Print IDs for debugging
-    cout << "User1 ID: " << user1->id <<" " <<user1->name<<endl;
-    cout << "User2 ID: " << user2->id << endl;
-    // Print followers for debugging
-    cout << "Followers of User1 (" << user1->id << "): ";
-    for (User* follower : user1->followers) {
-             cout << follower->id << " ";
-    }
-    cout << endl;
-
-    cout << "Followers of User2 (" << user2->id << "): ";
-    for (User* follower : user2->followers) {
-        cout << follower->id << " ";
-    }
-    cout << endl;
-
 
     vector<User*> mutual_followers;
 
@@ -135,9 +120,9 @@ vector<User*> Graph::findMutualFollowers(const string& ID1, const string& ID2)
     }
     else
     {
-        cout<<"Mutual followers are: " ;
+        cout<<"Mutual followers of "<<user1->name <<" & "<< user2->name <<" are: ";
         for (int i = 0 ; i < mutual_followers.size() ; i++){
-            cout<<mutual_followers[i]->id<<" ";
+            cout<<"("<<getUserById(mutual_followers[i]->id)->name<<" ID: "<<mutual_followers[i]->id<<") ";
         }
         cout<<endl;
     }
@@ -174,80 +159,12 @@ vector<User*> Graph::suggest_followers(string id)
     {
       cout<<"suggested followers are: " ;
         for (int i = 0 ; i < suggested_followers.size() ; i++){
-            cout<<suggested_followers[i]->id<<" ";
+            cout<<"("<<getUserById(suggested_followers[i]->id)->name<<" ID: "<<suggested_followers[i]->id<<") ";
         }
+        cout<<endl;
     }
 
 
 	return suggested_followers;
 
 }
-
-
-/*void Graph::buildGraph(const vector<User*>& users) {
-    // Add users to the graph
-    Graph *initGraph = new Graph;
-    initGraph
-
-    for (const User* user : users) {
-
-    }
-
-    // Add edges to the graph based on followers
-    for (const User* user : users) {
-        for (const User* follower : user->followers) {
-            //if()
-            addFollower(user->id, follower->id);
-        }
-    }
-}
-*/
-
-
-
-
-
-/*
-#include "Graph.h"
-#include "Functions.h"
-
-void Graph::addUser(User* user) {
-    users[user->id] = user;
-}
-
-void Graph::addFollower(const string& userId, const string& followerId) {
-    if (users.find(userId) != users.end() && users.find(followerId) != users.end()) {
-        users[followerId]->addFollower(users[userId]);
-    }
-}
-
-void Graph::buildGraph(const vector<User*>& users) {
-    // Add users to the graph
-    for (const User* user : users) {
-        addUser(const_cast<User*>(user));  // const_cast to remove const qualifier
-    }
-
-    // Add edges to the graph based on followers
-    for (const User* user : users) {
-        for (const User* follower : user->followers) {
-            //if()
-            addFollower(user->id, follower->id);
-        }
-    }
-}
-
-void Graph::printGraph() const {
-    for (const auto& entry : users) {
-        const User* user = entry.second;
-
-        cout << "User ID: " << user->id << endl;
-        cout << "Name: " << user->name << endl;
-        cout << "Followers: ";
-        for (const User* follower : user->followers) {
-            cout << follower->id << " ";
-        }
-        cout << endl;
-        cout << "----------------------------------------" << endl;
-    }
-}
-*/
