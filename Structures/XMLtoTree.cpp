@@ -5,14 +5,17 @@
     @param file text content of the xml file
     @param xml_tree the Tree object
 */
-void xml_to_tree(string& file_text, Tree& xml_tree) {
+void xml_to_tree(string file_text, Tree* xml_tree) {
     vector<string> xml_elements = xml_string_to_vec(file_text);
     for (string element : xml_elements) {
         char type;
-        if (element[0] = '<' && element[1] != '/') type = 'o';
-        else if (element[0] = '<' && element[1] == '/') type = 'c';
+        if (element[0] == '<' && element[1] != '/') type = 'o';
+        else if (element[0] == '<' && element[1] == '/') type = 'c';
         else type = 'd';
+        
         add_node_to_tree(type, element, xml_tree);
+        
+        if (OMAR_DEBUG) cout << "Element: " << element << endl;
     }
 }
 
@@ -49,22 +52,36 @@ vector<string> xml_string_to_vec(string& xml_text)
     @param element the element itself
     @param tree reference to the tree
 */
-void add_node_to_tree(char& type, string& element, Tree& tree) {
+void add_node_to_tree(char& type, string& element, Tree* tree) {
     if (type == 'o') {
+        
         string tag_name = element.substr(1, element.size() - 2);
-        if (tree.is_empty()) {
-            TreeNode* rootnode = new TreeNode(tag_name.c_str(),tree.level);
-            tree.set_root(rootnode);
-            tree.node_cursor = rootnode;
+        
+        
+        if (tree->is_empty()) {
+            
+            TreeNode* rootnode = new TreeNode(tag_name.c_str(),tree->level);
+            
+            tree->set_root(rootnode);
+            
+            tree->node_cursor = rootnode;
+            
         } else {
-            TreeNode* new_node = new TreeNode(tag_name.c_str(), tree.level, tree.node_cursor);
-            tree.node_cursor = new_node;
+            TreeNode* new_node = new TreeNode(tag_name.c_str(), tree->level, tree->node_cursor);
+            
+            tree->node_cursor = new_node;
+            
         }
-        tree.level++;
-    } else if (type = 'd') {
-        tree.node_cursor->set_value(element.c_str());
-    } else if (tree.node_cursor->get_parent() != nullptr) {
-        tree.node_cursor = tree.node_cursor->get_parent();
-        tree.level--;
+        tree->level++;
+    } else if (type == 'd') {
+        
+        tree->node_cursor->set_value(element.c_str());
+        
+    } else if (tree->node_cursor->get_parent() != nullptr) {
+        
+        tree->node_cursor = tree->node_cursor->get_parent();
+        
+        tree->level--;
     }
+    
 }

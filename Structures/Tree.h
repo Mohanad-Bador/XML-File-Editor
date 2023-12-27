@@ -1,5 +1,7 @@
 #include <vector>
-
+#include <iostream>
+#include <string>
+#define OMAR_DEBUG true
 enum tree_data_type {
     INT, TEXT, NODATA
 };
@@ -7,27 +9,27 @@ enum tree_data_type {
 class TreeNode
 {
 private:
-    const char *name;
-    const char *str_value;
+    std::string name;
+    std::string str_value;
     int int_value;
     int datatype;
     int level_in_tree;
     std::vector<TreeNode*> children;
-    TreeNode* next_sibling;
     TreeNode* parent;
+    TreeNode* next_sibling;
 public:
-    TreeNode(const char* name, int tree_level, TreeNode* parent);
-    TreeNode(const char* name, int tree_level);
+    TreeNode(std::string name, int tree_level, TreeNode* parent);
+    TreeNode(std::string name, int tree_level);
     ~TreeNode();
-    void add_child(const char* name);
-    TreeNode* get_parent(); // TODO: implement
-    TreeNode* get_next_sibling(); // TODO: implement
-    const char* get_name(); // TODO: implement
-    const char* get_string(); // TODO: implement
-    int get_int(); // TODO: implement
-    int set_value(const char* text = ""); // TODO: implement (sets datatype to INT or TEXT or NODATA)
-    std::vector<TreeNode*> get_children(); // TODO: implement
-    int get_datatype(); // TODO: implement
+    void add_child(std::string name);
+    TreeNode* get_parent();
+    TreeNode* get_next_sibling();
+    std::string get_name();
+    std::string get_string();
+    int get_int();
+    int set_value(std::string text = "");
+    std::vector<TreeNode*> get_children();
+    int get_datatype();
 };
 
 /*
@@ -35,17 +37,21 @@ public:
     @param tree_level level in tree (integer)
     @param parent Parent node
 */
-TreeNode::TreeNode(const char* name, int tree_level, TreeNode* parent)
-    : name(name), level_in_tree(tree_level), parent(parent), next_sibling(nullptr)
+TreeNode::TreeNode(std::string node_name, int tree_level, TreeNode* node_parent)
+    : name(node_name), level_in_tree(tree_level), parent(node_parent), next_sibling(nullptr)
 {
-        if (parent) {
-            parent->children.back()->next_sibling = this;
-            parent->children.push_back(this);
+    if (OMAR_DEBUG) std::cout << "Created TreeNode with name " << name << std::endl;
+    if (parent) {
+        parent->children.push_back(this);
+        if (parent->children.size() > 1) {
+            parent->children[parent->children.size() - 2]->next_sibling = this;
         }
+    }
 }
 
-TreeNode::TreeNode(const char* name, int tree_level)
-    : name(name), level_in_tree(tree_level), next_sibling(nullptr)
+
+TreeNode::TreeNode(std::string node_name, int tree_level)
+    : name(node_name), level_in_tree(tree_level), parent(nullptr), next_sibling(nullptr)
 {
         if (parent)
             parent->children.push_back(this);
@@ -58,13 +64,52 @@ TreeNode::~TreeNode()
     }
 }
 
-void TreeNode::add_child(const char* name) {
-    TreeNode* new_node = new TreeNode(name,this->level_in_tree + 1,this);
+void TreeNode::add_child(std::string child_name) {
+    TreeNode* new_node = new TreeNode(child_name,this->level_in_tree + 1,this);
     if (!(this->children.empty()))
         this->children.back()->next_sibling = new_node;
     this->children.push_back(new_node);
 }
 
+TreeNode* TreeNode::get_parent() {
+    return parent;
+}
+
+TreeNode* TreeNode::get_next_sibling() {
+    return next_sibling;
+}
+
+std::string TreeNode::get_name() {
+    if (OMAR_DEBUG) std::cout << "Returned TreeNode name " << name << std::endl;
+    return name;
+}
+
+std::string TreeNode::get_string() {
+    return str_value;
+}
+
+int TreeNode::get_int() {
+    return int_value;
+}
+
+int TreeNode::set_value(std::string text) {
+    try {
+        int_value = std::stoi(text);
+        datatype = INT;
+    } catch (std::exception &invalid_argument) {
+        str_value = text;
+        datatype = TEXT;
+    }
+    return datatype;
+}
+
+std::vector<TreeNode*> TreeNode::get_children() {
+    return children;
+}
+
+int TreeNode::get_datatype() {
+    return datatype;
+}
 
 class Tree
 {
@@ -76,16 +121,16 @@ public:
     TreeNode* node_cursor;
     TreeNode* get_root();
     void set_root(TreeNode* root); // TODO: implement
-    Tree(TreeNode* root);
+    Tree();
     ~Tree();
     bool is_empty();
 };
 
 
-Tree::Tree(TreeNode* rootnode)
+Tree::Tree()
 {
     level = 0;
-    this->rootnode = rootnode;
+    this->rootnode = nullptr;
 }
 
 Tree::~Tree()
@@ -101,4 +146,8 @@ TreeNode* Tree::get_root()
 bool Tree::is_empty()
 {
     return rootnode == nullptr;
+}
+
+void Tree::set_root(TreeNode* root) {
+    this->rootnode = root;
 }
