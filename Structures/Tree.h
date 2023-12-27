@@ -23,9 +23,11 @@ public:
     TreeNode* get_parent(); // TODO: implement
     TreeNode* get_next_sibling(); // TODO: implement
     const char* get_name(); // TODO: implement
-    const char* get_value(); // TODO: implement
+    const char* get_string(); // TODO: implement
+    int get_int(); // TODO: implement
     int set_value(const char* text = ""); // TODO: implement (sets datatype to INT or TEXT or NODATA)
     std::vector<TreeNode*> get_children(); // TODO: implement
+    int get_datatype(); // TODO: implement
 };
 
 /*
