@@ -13,14 +13,13 @@ int main()
     vector<User*> users =parser.parseXML("sample.xml");
     for(int i=0;i<users.size();i++)
     {
-        users[i]->print_user();
+        users[i]->printUser();
     }
 
     Graph userGraph(users.size(),users);
 
     userGraph.buildGraph();
 
-     //Print the adjacency list
     userGraph.printAdjacencyList();
 
     userGraph.findMostInfluentialUser();
@@ -28,18 +27,13 @@ int main()
     userGraph.findMostActiveUser();
 
     userGraph.findMutualFollowers("2","3");
-    userGraph.suggest_followers("1");
 
-/*
-    // Create a Graph instance
-    Graph userGraph;
-    // Add users to the graph
+    userGraph.suggest_followers("2");
 
-    // Build the graph using the users vector
-    userGraph.buildGraph(users);
+    for(int i=0;i<users.size();i++)
+    {
+        users[i]->postSearchByWord("solar");
+    }
 
-    // Print the graph
-    userGraph.printGraph();
-*/
   return 0;
 }

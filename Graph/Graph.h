@@ -37,33 +37,3 @@ public:
 };
 
 #endif
-
-
-
-/*
-#ifndef GRAPH_H
-#define GRAPH_H
-
-#include <iostream>
-#include <vector>
-#include <unordered_map>
-#include <unordered_set>
-#include <map>
-#include <string>
-#include "User.h"
-class Graph {
-private:
-    unordered_map<string, User*> users;
-
-public:
-    Graph() {}
-
-    void addUser(User* user);
-    void addFollower(const string& userId, const string& followerId);
-    void buildGraph(const vector<User*>& users);
-    void printGraph() const;
-};
-
-
-#endif
-*/

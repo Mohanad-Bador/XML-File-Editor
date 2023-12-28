@@ -16,12 +16,14 @@ public:
     string id;
     vector<User *> followers;
     vector<Post *> posts;
-    void print_user();
+    void printUser();
 
     ~User();
 
     User(const string& id, const string& name);
     void addFollower(User* follower);
+    void printPost(const Post* post) const;
+    string postSearchByWord(const string& word);
 };
 
 #endif
