@@ -23,7 +23,8 @@
 #include <QTextBrowser>
 #include <QDomDocument>
 #include "formatting.h"
-
+#include "xmltojson.h"
+#include "MyUniqueCompression.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;

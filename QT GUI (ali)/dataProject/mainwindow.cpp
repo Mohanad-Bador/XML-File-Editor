@@ -4,7 +4,7 @@ QString filePath;
 QVector<QString> xml_file;
 
 XML_Parser parse_xml;
-
+MyUniqueCompression xali;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -177,7 +177,7 @@ void MainWindow::on_Format_Button_clicked()
 void MainWindow::on_Convert_To_Json_clicked()
 {
     QString xmlcontent = parse_xml.Get_XML_Content();
-
+    QString jsonContent = QString::fromStdString(convert_to_json((filePath.toStdString())));
 
 
 
@@ -186,7 +186,7 @@ void MainWindow::on_Convert_To_Json_clicked()
 
 
     QLabel *Convert_To_Json = new QLabel(this);
-    Convert_To_Json->setText(xmlcontent);
+    Convert_To_Json->setText(jsonContent);
     Convert_To_Json->setWordWrap(true);
 
     ui->scrollArea_2->setWidget(Convert_To_Json);
@@ -203,7 +203,7 @@ void MainWindow::on_Save_Json_Button_clicked()
 void MainWindow::on_Minify_Button_clicked()
 {
     QString xmlcontent = parse_xml.Get_XML_Content();
-    QString minfiedContent = QString::fromStdString(MINIFY((filePath.toStdString())));
+    QString minfiedContent = minifyS((filePath.toStdString()));
 
 
 
@@ -213,6 +213,13 @@ void MainWindow::on_Minify_Button_clicked()
 
     QLabel *Minify = new QLabel(this);
     Minify->setText(minfiedContent);
+    // Set the alignment to allow word wrapping at spaces
+    Minify->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+
+    // Set the size policy to make the QLabel adjust its size based on the content
+    Minify->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    Minify->setMaximumWidth(ui->scrollArea_2->width());
+
     Minify->setWordWrap(true);
 
     ui->scrollArea_2->setWidget(Minify);
@@ -224,6 +231,8 @@ void MainWindow::on_Compress_Button_clicked()
 {
     QString xmlcontent = parse_xml.Get_XML_Content();
 
+    //xali.compressData((xmlcontent.toStdString()));
+    QString compressedContent = QString::fromStdString(xali.compressData((xmlcontent.toStdString())));
 
 
 
@@ -232,7 +241,7 @@ void MainWindow::on_Compress_Button_clicked()
 
 
     QLabel *Compress = new QLabel(this);
-    Compress->setText(xmlcontent);
+    Compress->setText(compressedContent);
     Compress->setWordWrap(true);
 
     ui->scrollArea_2->setWidget(Compress);
@@ -244,7 +253,7 @@ void MainWindow::on_Decompress_Button_clicked()
 {
     QString xmlcontent = parse_xml.Get_XML_Content();
 
-
+    QString decompressedContent = QString::fromStdString(xali.decompressData((xmlcontent.toStdString())));
 
 
 
@@ -252,7 +261,7 @@ void MainWindow::on_Decompress_Button_clicked()
 
 
     QLabel *Decompress = new QLabel(this);
-    Decompress->setText(xmlcontent);
+    Decompress->setText(decompressedContent);
     Decompress->setWordWrap(true);
 
     ui->scrollArea_2->setWidget(Decompress);

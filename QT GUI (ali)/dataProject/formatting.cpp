@@ -22,28 +22,25 @@ string FORMAT (string path)
 }
 
 
-string MINIFY(string path)
-{
-    stringstream ss;
-    streambuf* coutbuf = std::cout.rdbuf();
-    cout.rdbuf(ss.rdbuf());
-    minifyS(path);
-    std::cout.rdbuf(coutbuf);
-    return ss.str();
+// string MINIFY(string path)
+// {
 
-}
+//     return minifyS(path);
 
-static void minifyS(string path)
+// }
+
+QString minifyS(string path)
 {
     vector <string> donia;
 
     donia=file_to_vector(path);
-
+    QString x;
 
     for(int i=0; i<donia.size(); i++)
     {
-        cout<<donia[i];
+        x.append(donia[i]);
     }
+    return x;
 }
 
 

@@ -9,17 +9,27 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    Functions.cpp \
+    MyUniqueCompression.cpp \
+    XMLtoTree.cpp \
     formatting.cpp \
     globals.cpp \
     main.cpp \
     mainwindow.cpp \
-    xml_parser.cpp
+    tree.cpp \
+    xml_parser.cpp \
+    xmltojson.cpp
 
 HEADERS += \
+    Functions.h \
+    MyUniqueCompression.h \
+    Tree.h \
+    XMLtoTree.h \
     formatting.h \
     globals.h \
     mainwindow.h \
-    xml_parser.h
+    xml_parser.h \
+    xmltojson.h
 
 FORMS += \
     mainwindow.ui
