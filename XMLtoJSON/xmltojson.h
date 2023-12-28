@@ -3,7 +3,7 @@
 #include <stack>
 #include <regex>
 #include "../Structures/XMLtoTree.h"
-#define INDENT(X,BUFFER) for (int _ = 0; _ < X; _++) BUFFER += "\t"
+#define INDENT(X,BUFFER) for (int _ = 0; _ < X; _++) BUFFER += "  "
 using namespace std;
 static bool isArray(TreeNode* node, vector<string> array_names);
 static bool child_flag = false;
