@@ -12,6 +12,7 @@ SOURCES += \
     Functions.cpp \
     MyUniqueCompression.cpp \
     XMLtoTree.cpp \
+    consistency.cpp \
     formatting.cpp \
     globals.cpp \
     main.cpp \
@@ -25,6 +26,7 @@ HEADERS += \
     MyUniqueCompression.h \
     Tree.h \
     XMLtoTree.h \
+    consistency.h \
     formatting.h \
     globals.h \
     mainwindow.h \

@@ -5,6 +5,7 @@ QVector<QString> xml_file;
 
 XML_Parser parse_xml;
 MyUniqueCompression xali;
+string compressed ;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -230,9 +231,9 @@ void MainWindow::on_Minify_Button_clicked()
 void MainWindow::on_Compress_Button_clicked()
 {
     QString xmlcontent = parse_xml.Get_XML_Content();
-
+    compressed = xali.compressData((xmlcontent.toStdString()));
     //xali.compressData((xmlcontent.toStdString()));
-    QString compressedContent = QString::fromStdString(xali.compressData((xmlcontent.toStdString())));
+    QString compressedContent = QString::fromStdString(compressed);
 
 
 
@@ -253,7 +254,7 @@ void MainWindow::on_Decompress_Button_clicked()
 {
     QString xmlcontent = parse_xml.Get_XML_Content();
 
-    QString decompressedContent = QString::fromStdString(xali.decompressData((xmlcontent.toStdString())));
+    QString decompressedContent = QString::fromStdString(xali.decompressData((compressed)));
 
 
 
