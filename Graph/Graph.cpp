@@ -19,7 +19,6 @@ void Graph::addEdge(User* u, User* v) {
 }
 
 void Graph::printAdjacencyList() const {
-    cout<<"Adjacency list of this graph:"<<endl;
     for (int i = 1; i < adjList.size(); ++i) {
         cout << "User ID " << i << " -> ";
         for (const User* user : adjList[i]) {
@@ -38,7 +37,6 @@ void Graph::buildGraph(){
             User* follower = currentUser->followers[j];
             this->addEdge(currentUser, follower);
         }
-       // cout << "User ID: " << currentUser->id << ", Followers: " << currentUser->followers.size() << endl;
     }
 }
 
@@ -62,7 +60,7 @@ User* Graph::findMostInfluentialUser() {
             maxFollowers = followersCount;
         }
     }
-    cout << "The most influential user is: " <<mostInfluentialUser->name<<" ID: "<<mostInfluentialUser->id<<endl;
+    cout << "The most influential user is: " <<mostInfluentialUser->id<<endl;
     return mostInfluentialUser;
 }
 
@@ -74,7 +72,7 @@ User* Graph::findMostActiveUser()
 	{
 		for (const User* follower : adjList[i])
         {
-            int loc = std::stoi(follower->id);
+            int loc =stoi(follower->id);
             activity[loc]++;
         }
 	}
@@ -89,9 +87,8 @@ User* Graph::findMostActiveUser()
             max_loc = i;
         }
     }
-    User* mostActiveUser = getUserById(to_string(max_loc));
-    cout << "The most active user is: " <<mostActiveUser->name<<" ID: "<<max_loc<<endl;
-    return mostActiveUser;
+    cout << "The most active user is: " <<max_loc<<endl;
+    return getUserById(to_string(max_loc));
 }
 
 
@@ -103,9 +100,9 @@ vector<User*> Graph::findMutualFollowers(const string& ID1, const string& ID2)
     vector<User*> mutual_followers;
 
     // Find mutual followers
-    for (User* follower1 : user1->followers)
+    for (User* follower1 : adjList[stoi(user1->id)])
     {
-        for (User* follower2 : user2->followers)
+        for (User* follower2 : adjList[stoi(user2->id)])
         {
             if (follower1->id == follower2->id)
             {
@@ -120,9 +117,9 @@ vector<User*> Graph::findMutualFollowers(const string& ID1, const string& ID2)
     }
     else
     {
-        cout<<"Mutual followers of "<<user1->name <<" & "<< user2->name <<" are: ";
+        cout<<"Mutual followers are: " ;
         for (int i = 0 ; i < mutual_followers.size() ; i++){
-            cout<<"("<<getUserById(mutual_followers[i]->id)->name<<" ID: "<<mutual_followers[i]->id<<") ";
+            cout<<mutual_followers[i]->id<<" ";
         }
         cout<<endl;
     }
@@ -134,7 +131,7 @@ vector<User*> Graph::suggest_followers(string id)
 {
     vector<bool> v(this->users.size()+1,false);
     User* user=getUserById(id);
-    vector<User*> followers=user->followers;
+    vector<User*> followers=adjList[stoi(user->id)];
     vector<User*> suggested_followers;
 
     v[stoi(id)]=true;
@@ -143,7 +140,7 @@ vector<User*> Graph::suggest_followers(string id)
     {
 
        User* u=getUserById(follower->id);
-       vector<User *> followers_of_followers=u->followers;
+       vector<User *> followers_of_followers=adjList[stoi(u->id)];
        for(User* f:followers_of_followers){
            if(!v[stoi(f->id)]){
             suggested_followers.push_back(f);
@@ -159,9 +156,8 @@ vector<User*> Graph::suggest_followers(string id)
     {
       cout<<"suggested followers are: " ;
         for (int i = 0 ; i < suggested_followers.size() ; i++){
-            cout<<"("<<getUserById(suggested_followers[i]->id)->name<<" ID: "<<suggested_followers[i]->id<<") ";
+            cout<<suggested_followers[i]->id<<" ";
         }
-        cout<<endl;
     }
 
 
