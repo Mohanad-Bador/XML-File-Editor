@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <string>
 #include <vector>
+#include <stack>
 using namespace std;
 #pragma once
 
