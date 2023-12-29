@@ -47,44 +47,53 @@ User* Graph::getUserById(const string &userid)
     return nullptr;
 }
 
-User* Graph::findMostInfluentialUser() {
-    User* mostInfluentialUser = nullptr;
+vector<User*> Graph::findMostInfluentialUser() {
+    vector<User*> mostInfluentialUsers;
     int maxFollowers = 0;
 
     for (int i = 1; i < adjList.size(); ++i) {
         int followersCount = adjList[i].size();
         if (followersCount > maxFollowers) {
-            mostInfluentialUser = getUserById(to_string(i));
+            mostInfluentialUsers.clear();  // Clear the previous list
+            mostInfluentialUsers.push_back(getUserById(to_string(i)));
             maxFollowers = followersCount;
+        } else if (followersCount == maxFollowers) {
+            mostInfluentialUsers.push_back(getUserById(to_string(i)));
         }
     }
-    return mostInfluentialUser;
+
+    return mostInfluentialUsers;
 }
 
 
-User* Graph::findMostActiveUser()
-{
-	vector<int> activity(adjList.size(), 0);
-	for (int i = 0; i < adjList.size(); i++)
-	{
-		for (const User* follower : adjList[i])
-        {
-            int loc =stoi(follower->id);
+vector<User*> Graph::findMostActiveUser() {
+    vector<int> activity(adjList.size(), 0);
+
+    // Calculate activity for each user
+    for (int i = 0; i < adjList.size(); i++) {
+        for (const User* follower : adjList[i]) {
+            int loc = stoi(follower->id);
             activity[loc]++;
         }
-	}
-    int max = activity[0];
-    int max_loc = 0;
+    }
 
-    for (int i = 1; i < activity.size(); i++)
-    {
-        if (activity[i] > max)
-        {
-            max = activity[i];
-            max_loc = i;
+    // Find the maximum activity
+    int maxActivity = 0;
+    for (int i = 0; i < activity.size(); i++) {
+        if (activity[i] > maxActivity) {
+            maxActivity = activity[i];
         }
     }
-    return getUserById(to_string(max_loc));
+
+    // Collect users with maximum activity
+    vector<User*> mostActiveUsers;
+    for (int i = 0; i < activity.size(); i++) {
+        if (activity[i] == maxActivity) {
+            mostActiveUsers.push_back(getUserById(to_string(i)));
+        }
+    }
+
+    return mostActiveUsers;
 }
 
 
@@ -132,15 +141,32 @@ vector<User*> Graph::suggest_followers(const string&id)
 
 string Graph:: get_mostInfluentialUser()
 {
-  User *user=findMostInfluentialUser();
-  return "Most Influential User is : " + user->name + " ID: " + user->id;
+    vector<User*> mostInfluentialUsers = findMostInfluentialUser();
+
+    if (mostInfluentialUsers.empty()) {
+        return "No users found.";
+    }
+    string s = "Most Influential User(s):\n";
+    for (User* user : mostInfluentialUsers) {
+        s += "Name: " + user->name + " ID: " + user->id + '\n';
+    }
+    return s;
 }
 
 
-string Graph:: get_mostActiveUser()
-{
-  User *user=findMostActiveUser();
-  return "Most Active User is : " + user->name + " ID: " + user->id;
+string Graph::get_mostActiveUser() {
+    vector<User*> mostActiveUsers = findMostActiveUser();
+
+    if (mostActiveUsers.empty()) {
+        return "No active users found.";
+    }
+
+    string s = "Most Active User(s):\n";
+    for (const User* user : mostActiveUsers) {
+        s += "Name: " + user->name + " ID: " + user->id + '\n';
+    }
+
+    return s;
 }
 
 string Graph:: get_suggestedFollowers(const string& ID)
