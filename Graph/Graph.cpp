@@ -1,10 +1,8 @@
 #include "Graph.h"
 using namespace std;
-Graph::Graph(){
+Graph::Graph(){}
 
-}
-
-Graph::Graph(int numVertices,vector<User*> users) : adjList(numVertices+1) {
+Graph::Graph(int numVertices,vector<User*>& users) : adjList(numVertices+1) {
     this->users=users;
 }
 
@@ -18,7 +16,7 @@ void Graph::addEdge(User* u, User* v) {
     adjList[userId].push_back(v);
 }
 
-void Graph::printAdjacencyList() const {
+void Graph::printAdjacencyList()  {
     for (int i = 1; i < adjList.size(); ++i) {
         cout << "User ID " << i << " -> ";
         for (const User* user : adjList[i]) {
@@ -34,7 +32,7 @@ void Graph::buildGraph(){
     for (int i = 0; i < users.size(); ++i) {
         User* currentUser = users[i];
         for (int j = 0; j < currentUser->followers.size(); ++j) {
-            User* follower = currentUser->followers[j];
+            User* follower = getUserById(currentUser->followers[j]->id);
             this->addEdge(currentUser, follower);
         }
     }
@@ -60,7 +58,6 @@ User* Graph::findMostInfluentialUser() {
             maxFollowers = followersCount;
         }
     }
-    cout << "The most influential user is: " <<mostInfluentialUser->id<<endl;
     return mostInfluentialUser;
 }
 
@@ -87,7 +84,6 @@ User* Graph::findMostActiveUser()
             max_loc = i;
         }
     }
-    cout << "The most active user is: " <<max_loc<<endl;
     return getUserById(to_string(max_loc));
 }
 
@@ -96,9 +92,7 @@ vector<User*> Graph::findMutualFollowers(const string& ID1, const string& ID2)
 {
     User* user1 = getUserById(ID1);
     User* user2 = getUserById(ID2);
-
     vector<User*> mutual_followers;
-
     // Find mutual followers
     for (User* follower1 : adjList[stoi(user1->id)])
     {
@@ -110,24 +104,11 @@ vector<User*> Graph::findMutualFollowers(const string& ID1, const string& ID2)
             }
         }
     }
-
-    if (mutual_followers.empty())
-    {
-        cout << "No mutual followers." << endl;
-    }
-    else
-    {
-        cout<<"Mutual followers are: " ;
-        for (int i = 0 ; i < mutual_followers.size() ; i++){
-            cout<<mutual_followers[i]->id<<" ";
-        }
-        cout<<endl;
-    }
     return mutual_followers;
 }
 
 
-vector<User*> Graph::suggest_followers(string id)
+vector<User*> Graph::suggest_followers(const string&id)
 {
     vector<bool> v(this->users.size()+1,false);
     User* user=getUserById(id);
@@ -135,10 +116,8 @@ vector<User*> Graph::suggest_followers(string id)
     vector<User*> suggested_followers;
 
     v[stoi(id)]=true;
-
     for(User* follower:followers)
     {
-
        User* u=getUserById(follower->id);
        vector<User *> followers_of_followers=adjList[stoi(u->id)];
        for(User* f:followers_of_followers){
@@ -148,19 +127,47 @@ vector<User*> Graph::suggest_followers(string id)
            }
        }
     }
-    if (suggested_followers.empty())
-    {
-        cout << "No suggested followers." << endl;
-    }
-    else
-    {
-      cout<<"suggested followers are: " ;
-        for (int i = 0 ; i < suggested_followers.size() ; i++){
-            cout<<suggested_followers[i]->id<<" ";
-        }
-    }
-
-
 	return suggested_followers;
-
 }
+
+string Graph:: get_mostInfluentialUser()
+{
+  User *user=findMostInfluentialUser();
+  return "Most Influential User is : " + user->name + " ID: " + user->id;
+}
+
+
+string Graph:: get_mostActiveUser()
+{
+  User *user=findMostActiveUser();
+  return "Most Active User is : " + user->name + " ID: " + user->id;
+}
+
+string Graph:: get_suggestedFollowers(const string& ID)
+{
+  vector<User*> users=suggest_followers(ID);
+  string s;
+  for(User* user:users)
+  {
+      s+="Suggested Follower: " + user->name + " ID : " + user->id +'\n';
+  }
+  if(s.empty())
+    return "NO Suggested Followers";
+  else
+      return s;
+}
+string Graph:: get_mutualFollowers(const string& ID1,const string& ID2)
+{
+  vector<User*> users=findMutualFollowers(ID1,ID2);
+  string s;
+  for(User* user:users)
+  {
+      s+="Mutual Follower: " + user->name + " ID : " + user->id +'\n';
+  }
+  if(s.empty())
+    return "NO Mutual Followers";
+  else
+      return s;
+}
+
+
