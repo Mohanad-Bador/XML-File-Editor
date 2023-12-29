@@ -26,6 +26,10 @@
 #include "xmltojson.h"
 #include "MyUniqueCompression.h"
 #include "consistency.h"
+#include "Graph.h"
+#include "XMLParser.h"
+#include "User.h"
+#include "Post.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -68,6 +72,10 @@ private slots:
     void on_showSuggestions_clicked();
 
     void on_postSearch_clicked();
+
+    void on_mostActive_clicked();
+
+    void on_mostInfluential_clicked();
 
 private:
     Ui::MainWindow *ui;

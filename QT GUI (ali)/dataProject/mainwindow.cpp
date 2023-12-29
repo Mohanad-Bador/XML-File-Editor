@@ -3,7 +3,11 @@
 
 QString filePath;
 QVector<QString> xml_file;
-
+//.
+XMLParser parser;
+vector<User*> users =parser.parseXML("sample.xml");
+Graph userGraph(users.size(),users);
+//.
 XML_Parser parse_xml;
 MyUniqueCompression xali;
 string compressed ;
@@ -368,9 +372,12 @@ void MainWindow::on_mutualUsers_clicked()
     connect(submitButton, &QPushButton::clicked, [this, inputDialog, lineEditFirstID, lineEditSecondID]() {
         int firstID = lineEditFirstID->text().toInt();
         int secondID = lineEditSecondID->text().toInt();
-
+        vector<User*> users =parser.parseXML(filePath.QString::toStdString());
+        Graph userGraph(users.size(),users);
+        userGraph.buildGraph();
+        QString resultString = QString ::fromStdString(userGraph.get_mutualFollowers(to_string(firstID ),to_string(secondID)));
         // Perform your logic with the entered IDs HEREEEE AND PUT THE RESULTS IN THIS resultString
-        QString resultString = "THE ID of the first is " + QString::number(firstID) + " and that of the second is: " + QString::number(secondID);
+        //QString resultString = "THE ID of the first is " + QString::number(firstID) + " and that of the second is: " + QString::number(secondID);
 
 
 
@@ -404,8 +411,11 @@ void MainWindow::on_showSuggestions_clicked()
         int ID = lineEditFirstID->text().toInt();
 
         // Perform your logic with the entered IDs HEREEEE AND PUT THE RESULTS IN THIS resultString
-        QString resultString = "THE ID of the first is " + QString::number(ID) ;
 
+        vector<User*> users =parser.parseXML(filePath.QString::toStdString());
+        Graph userGraph(users.size(),users);
+        userGraph.buildGraph();
+        QString resultString = QString ::fromStdString(userGraph.get_suggestedFollowers(to_string(ID )));
 
 
         QDialog *resultDialog = new QDialog(this);
@@ -451,5 +461,71 @@ void MainWindow::on_postSearch_clicked()
         inputDialog->close();
     });
     inputDialog->exec();
+}
+
+
+void MainWindow::on_mostActive_clicked()
+{
+
+
+    vector<User*> users =parser.parseXML(filePath.QString::toStdString());
+    Graph userGraph(users.size(),users);
+    userGraph.buildGraph();
+    QString mostActive = QString ::fromStdString(userGraph.get_mostActiveUser());
+
+    QDialog *newDialog = new QDialog(this);
+    newDialog->setFixedSize(250, 250); // Increased height to accommodate QLabel
+    newDialog->setWindowTitle("Social Network Analysis");
+
+    // Create a QVBoxLayout for the dialog
+    QVBoxLayout *mainLayout = new QVBoxLayout(newDialog);
+
+    // Create a QLabel and set its alignment to center
+    QLabel *label = new QLabel(mostActive, newDialog);
+    label->setAlignment(Qt::AlignCenter);
+
+    // Add the QLabel to the layout
+    mainLayout->addWidget(label);
+
+    // Set the layout for the QDialog
+    newDialog->setLayout(mainLayout);
+
+    newDialog->exec();
+}
+
+
+void MainWindow::on_mostInfluential_clicked()
+{
+    vector<User*> users =parser.parseXML(filePath.QString::toStdString());
+    Graph userGraph(users.size(),users);
+    userGraph.buildGraph();
+    QString mostActive = QString ::fromStdString(userGraph.get_mostInfluentialUser());
+    // Perform your logic with the entered IDs HEREEEE AND PUT THE RESULTS IN THIS resultString
+
+
+
+
+    //QDialog *resultDialog = new QDialog(this);
+
+
+
+    QDialog *newDialog = new QDialog(this);
+    newDialog->setFixedSize(250, 250); // Increased height to accommodate QLabel
+    newDialog->setWindowTitle("Social Network Analysis");
+
+    // Create a QVBoxLayout for the dialog
+    QVBoxLayout *mainLayout = new QVBoxLayout(newDialog);
+
+    // Create a QLabel and set its alignment to center
+    QLabel *label = new QLabel(mostActive, newDialog);
+    label->setAlignment(Qt::AlignCenter);
+
+    // Add the QLabel to the layout
+    mainLayout->addWidget(label);
+
+    // Set the layout for the QDialog
+    newDialog->setLayout(mainLayout);
+
+    newDialog->exec();
 }
 

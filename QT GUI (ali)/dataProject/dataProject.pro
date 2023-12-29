@@ -10,7 +10,11 @@ CONFIG += c++17
 
 SOURCES += \
     Functions.cpp \
+    Graph.cpp \
     MyUniqueCompression.cpp \
+    Post.cpp \
+    User.cpp \
+    XMLParser.cpp \
     XMLtoTree.cpp \
     consistency.cpp \
     formatting.cpp \
@@ -23,8 +27,12 @@ SOURCES += \
 
 HEADERS += \
     Functions.h \
+    Graph.h \
     MyUniqueCompression.h \
+    Post.h \
     Tree.h \
+    User.h \
+    XMLParser.h \
     XMLtoTree.h \
     consistency.h \
     formatting.h \

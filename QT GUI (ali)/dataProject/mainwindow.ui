@@ -17,7 +17,7 @@
    <widget class="QPushButton" name="Enter_XML_File">
     <property name="geometry">
      <rect>
-      <x>150</x>
+      <x>130</x>
       <y>550</y>
       <width>141</width>
       <height>29</height>
@@ -69,7 +69,7 @@
    <widget class="QPushButton" name="upload_xml">
     <property name="geometry">
      <rect>
-      <x>30</x>
+      <x>10</x>
       <y>550</y>
       <width>91</width>
       <height>29</height>
@@ -191,9 +191,9 @@
    <widget class="QPushButton" name="Detect_Error">
     <property name="geometry">
      <rect>
-      <x>360</x>
+      <x>350</x>
       <y>550</y>
-      <width>83</width>
+      <width>101</width>
       <height>29</height>
      </rect>
     </property>
@@ -204,7 +204,7 @@
    <widget class="QPushButton" name="SocialNetworkAnalysis">
     <property name="geometry">
      <rect>
-      <x>370</x>
+      <x>40</x>
       <y>590</y>
       <width>191</width>
       <height>29</height>
@@ -217,7 +217,7 @@
    <widget class="QPushButton" name="postSearch">
     <property name="geometry">
      <rect>
-      <x>590</x>
+      <x>670</x>
       <y>590</y>
       <width>131</width>
       <height>29</height>
@@ -230,7 +230,7 @@
    <widget class="QPushButton" name="showSuggestions">
     <property name="geometry">
      <rect>
-      <x>910</x>
+      <x>990</x>
       <y>590</y>
       <width>161</width>
       <height>29</height>
@@ -243,7 +243,7 @@
    <widget class="QPushButton" name="mutualUsers">
     <property name="geometry">
      <rect>
-      <x>752</x>
+      <x>830</x>
       <y>590</y>
       <width>131</width>
       <height>29</height>
@@ -251,6 +251,32 @@
     </property>
     <property name="text">
      <string>mutualUsers</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="mostActive">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>590</y>
+      <width>121</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>mostActive</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="mostInfluential">
+    <property name="geometry">
+     <rect>
+      <x>530</x>
+      <y>590</y>
+      <width>121</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>mostInfluential</string>
     </property>
    </widget>
   </widget>
