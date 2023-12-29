@@ -25,6 +25,7 @@
 #include "formatting.h"
 #include "xmltojson.h"
 #include "MyUniqueCompression.h"
+#include "consistency.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -58,8 +59,18 @@ private slots:
 
     void on_Decompress_Button_clicked();
 
+    void on_Detect_Error_clicked();
+
+    void on_SocialNetworkAnalysis_clicked();
+
+    void on_mutualUsers_clicked();
+
+    void on_showSuggestions_clicked();
+
+    void on_postSearch_clicked();
+
 private:
     Ui::MainWindow *ui;
-    void Display_Problematic_XML(const QString& xmlContent);
+    void Display_Problematic_XML(const QString& xmlContent, const std::vector<err_data>& errors);
 };
 #endif // MAINWINDOW_H

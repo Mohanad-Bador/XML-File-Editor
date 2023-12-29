@@ -188,6 +188,71 @@
      </property>
     </widget>
    </widget>
+   <widget class="QPushButton" name="Detect_Error">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>550</y>
+      <width>83</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Detect_Error</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="SocialNetworkAnalysis">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>590</y>
+      <width>191</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>SocialNetworkAnalysis</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="postSearch">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>590</y>
+      <width>131</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>postSearch</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="showSuggestions">
+    <property name="geometry">
+     <rect>
+      <x>910</x>
+      <y>590</y>
+      <width>161</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>showSuggestions</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="mutualUsers">
+    <property name="geometry">
+     <rect>
+      <x>752</x>
+      <y>590</y>
+      <width>131</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>mutualUsers</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

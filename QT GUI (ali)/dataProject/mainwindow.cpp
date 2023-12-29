@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+
 QString filePath;
 QVector<QString> xml_file;
 
@@ -57,7 +58,14 @@ void MainWindow::on_upload_xml_clicked()
                 ui->scrollArea_1->setWidget(XML_File);
                 ui->scrollArea_1->setWidgetResizable(true);
             } else {
-                Display_Problematic_XML(xmlContent);
+                QStringList stringList = xmlContent.split("\n");
+                vector <string> Bdetection;
+                // Convert each QString to std::string
+                for (const QString& str : stringList) {
+                    Bdetection.push_back(str.toStdString());
+                }
+                vector <err_data> errors = detectError(Bdetection);
+                Display_Problematic_XML(xmlContent, errors);
             }
         } else {
             qDebug() << "Error opening XML file";
@@ -66,51 +74,55 @@ void MainWindow::on_upload_xml_clicked()
 
 
 }
-void MainWindow::Display_Problematic_XML(const QString& xmlContent) {
-    // Create a new QTextBrowser to display the XML content with mistakes highlighted
-    QTextBrowser *xmlBrowser = new QTextBrowser(this);
 
-    // Set the XML content to the QTextBrowser
+
+void MainWindow::Display_Problematic_XML(const QString& xmlContent, const std::vector<err_data>& errors) {
+    // Create a new QTextEdit to display the XML content with mistakes highlighted
+    QTextEdit *xmlBrowser = new QTextEdit(this);
+
+    // Set the XML content to the QTextEdit
     xmlBrowser->setPlainText(xmlContent);
 
     // Process the XML content and highlight mistakes
     QTextCursor cursor(xmlBrowser->document());
 
-    // Identify the missing closing tag
-    int errorStart = xmlContent.indexOf('<');
-    int errorEnd = xmlContent.indexOf('>', errorStart + 1);
+    QTextCharFormat errorFormat;
+    errorFormat.setForeground(QColor(Qt::red));
+    //errorFormat.setFontUnderline(true);
 
-    while (errorStart != -1 && errorEnd != -1) {
-        if (xmlContent[errorStart + 1] != '/') {
-            // Check if the tag is an opening tag
-            QString tagName = xmlContent.mid(errorStart + 1, errorEnd - errorStart - 1).trimmed();
+    QList<QTextEdit::ExtraSelection> selections;
 
-            if (!ProblematicTagsQueue.isEmpty() && tagName == ProblematicTagsQueue.front()) {
-                // Change the color of the matching tag to red
-                QTextCharFormat format;
-                format.setForeground(QColor(Qt::red));
+    // Split the XML content into lines
+    QStringList lines = xmlContent.split('\n');
 
-                // Calculate the start and end positions of the current tag
-                int tagStart = errorStart;
-                int tagEnd = errorEnd;
+    for (const err_data& error : errors) {
+        // Ensure the error line number is valid
+        int errorLineNumber = error.err_loc ; // Adjust for zero-based index
+        if (errorLineNumber >= 0 && errorLineNumber < lines.size()) {
+            // Set the cursor to the start of the error line
+            cursor.setPosition(cursor.document()->findBlockByLineNumber(errorLineNumber).position());
 
-                // Apply formatting only to the current tag
-                cursor.setPosition(tagStart);
-                cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, tagEnd - tagStart + 1);
-                cursor.mergeCharFormat(format);
-                // Dequeue the front of the queue
-                ProblematicTagsQueue.dequeue();
-            }
+            // Set the selection range for the error line
+            QTextEdit::ExtraSelection selection;
+            selection.format = errorFormat;
+            selection.cursor = cursor;
+            selection.cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
+
+            // Add the extra selection to the list
+            selections.append(selection);
         }
-
-        // Move to the next potential error
-        errorStart = xmlContent.indexOf('<', errorEnd);
-        errorEnd = xmlContent.indexOf('>', errorStart + 1);
     }
 
-    // Add the new QTextBrowser to the layout
+    // Set all the extra selections
+    xmlBrowser->setExtraSelections(selections);
+
+    // Add the new QTextEdit to the layout
     ui->verticalLayout->addWidget(xmlBrowser);
 }
+
+
+
+
 
 void MainWindow::on_Enter_XML_File_clicked()
 {
@@ -131,7 +143,13 @@ void MainWindow::on_Enter_XML_File_clicked()
             ui->scrollArea_1->setWidget(Enter_XML_File);
             ui->scrollArea_1->setWidgetResizable(true);
         } else {
-            Display_Problematic_XML(xmlContent);
+            QStringList stringList = xmlContent.split("\n");
+            vector <string> Bdetection;
+            // Convert each QString to std::string
+            for (const QString& str : stringList) {
+                Bdetection.push_back(str.toStdString());
+            }
+            vector <err_data> errors = detectError(Bdetection);
         }
     }
 
@@ -141,8 +159,22 @@ void MainWindow::on_Enter_XML_File_clicked()
 void MainWindow::on_Correct_Errors_Button_clicked()
 {
     QString xmlcontent = parse_xml.Get_XML_Content();
+    QString correctedContent;
+    QStringList stringList = xmlcontent.split("\n");
+    vector <string> Bcorrection;
+    // Convert each QString to std::string
+    for (const QString& str : stringList) {
+        Bcorrection.push_back(str.toStdString());
+    }
+    vector <err_data> correction = detectError(Bcorrection);
 
-
+    vector <string> correctionn= error_corrector(Bcorrection, correction);
+    QString result;
+    for (const std::string& str : correctionn) {
+        result += QString::fromStdString(str);
+        result += "\n";
+    }
+    correctedContent = result;
 
 
 
@@ -150,7 +182,7 @@ void MainWindow::on_Correct_Errors_Button_clicked()
 
 
     QLabel *Correct_Errors = new QLabel(this);
-    Correct_Errors->setText(xmlcontent);
+    Correct_Errors->setText(correctedContent);
     Correct_Errors->setWordWrap(true);
 
     ui->scrollArea_2->setWidget(Correct_Errors);
@@ -267,5 +299,157 @@ void MainWindow::on_Decompress_Button_clicked()
 
     ui->scrollArea_2->setWidget(Decompress);
     ui->scrollArea_2->setWidgetResizable(true);
+}
+
+
+void MainWindow::on_Detect_Error_clicked()
+{
+    QString xmlcontent = parse_xml.Get_XML_Content();
+
+    QString detectedContent;
+    QStringList stringList = xmlcontent.split("\n");
+    vector <string> Bdetection;
+    // Convert each QString to std::string
+    for (const QString& str : stringList) {
+        Bdetection.push_back(str.toStdString());
+    }
+    vector <err_data> detection = detectError(Bdetection);
+
+    string  detectionn = printError (detection);
+
+    detectedContent = QString::fromStdString(detectionn);
+
+
+    QLabel *Detect = new QLabel(this);
+    Detect->setText(detectedContent);
+    Detect->setWordWrap(true);
+
+    ui->scrollArea_2->setWidget(Detect);
+    ui->scrollArea_2->setWidgetResizable(true);
+
+}
+
+
+void MainWindow::on_SocialNetworkAnalysis_clicked()
+{
+    QString xmlcontent = parse_xml.Get_XML_Content();
+
+
+
+
+
+    QDialog *newDialog = new QDialog(this);
+    newDialog->setFixedSize(500, 400);
+    newDialog->setWindowTitle("Social Network Analysis");
+    QScrollArea *dataScrollArea = new QScrollArea(newDialog);
+    QLabel *label = new QLabel(xmlcontent, newDialog);
+    dataScrollArea->setWidget(label);
+    dataScrollArea->setWidgetResizable(true);
+    newDialog->exec();
+}
+
+
+void MainWindow::on_mutualUsers_clicked()
+{
+    QDialog *inputDialog = new QDialog(this);
+    inputDialog->setFixedSize(300, 150);
+    inputDialog->setWindowTitle("Mutual users");
+    QVBoxLayout *layout = new QVBoxLayout(inputDialog);
+    QLabel *labelFirstID = new QLabel("Enter First ID:", inputDialog);
+    QLineEdit *lineEditFirstID = new QLineEdit(inputDialog);
+    QLabel *labelSecondID = new QLabel("Enter Second ID:", inputDialog);
+    QLineEdit *lineEditSecondID = new QLineEdit(inputDialog);
+    layout->addWidget(labelFirstID);
+    layout->addWidget(lineEditFirstID);
+    layout->addWidget(labelSecondID);
+    layout->addWidget(lineEditSecondID);
+    QPushButton *submitButton = new QPushButton("Submit", inputDialog);
+    layout->addWidget(submitButton);
+    connect(submitButton, &QPushButton::clicked, [this, inputDialog, lineEditFirstID, lineEditSecondID]() {
+        int firstID = lineEditFirstID->text().toInt();
+        int secondID = lineEditSecondID->text().toInt();
+
+        // Perform your logic with the entered IDs HEREEEE AND PUT THE RESULTS IN THIS resultString
+        QString resultString = "THE ID of the first is " + QString::number(firstID) + " and that of the second is: " + QString::number(secondID);
+
+
+
+        QDialog *resultDialog = new QDialog(this);
+        resultDialog->setFixedSize(300, 150);
+        resultDialog->setWindowTitle("Mutual between two users");
+        QVBoxLayout *resultLayout = new QVBoxLayout(resultDialog);
+        QLabel *resultLabel = new QLabel(resultString, resultDialog);
+        resultLayout->addWidget(resultLabel);
+        resultDialog->exec();
+        inputDialog->close();
+    });
+    inputDialog->exec();
+}
+
+
+
+void MainWindow::on_showSuggestions_clicked()
+{
+    QDialog *inputDialog = new QDialog(this);
+    inputDialog->setFixedSize(300, 150);
+    inputDialog->setWindowTitle("Suggestions");
+    QVBoxLayout *layout = new QVBoxLayout(inputDialog);
+    QLabel *labelFirstID = new QLabel("Enter The user's ID:", inputDialog);
+    QLineEdit *lineEditFirstID = new QLineEdit(inputDialog);
+    layout->addWidget(labelFirstID);
+    layout->addWidget(lineEditFirstID);
+    QPushButton *submitButton = new QPushButton("Submit", inputDialog);
+    layout->addWidget(submitButton);
+    connect(submitButton, &QPushButton::clicked, [this, inputDialog, lineEditFirstID]() {
+        int ID = lineEditFirstID->text().toInt();
+
+        // Perform your logic with the entered IDs HEREEEE AND PUT THE RESULTS IN THIS resultString
+        QString resultString = "THE ID of the first is " + QString::number(ID) ;
+
+
+
+        QDialog *resultDialog = new QDialog(this);
+        resultDialog->setFixedSize(300, 150);
+        resultDialog->setWindowTitle("Mutual between two users");
+        QVBoxLayout *resultLayout = new QVBoxLayout(resultDialog);
+        QLabel *resultLabel = new QLabel(resultString, resultDialog);
+        resultLayout->addWidget(resultLabel);
+        resultDialog->exec();
+        inputDialog->close();
+    });
+    inputDialog->exec();
+}
+
+
+void MainWindow::on_postSearch_clicked()
+{
+    QDialog *inputDialog = new QDialog(this);
+    inputDialog->setFixedSize(300, 150);
+    inputDialog->setWindowTitle("Post search");
+    QVBoxLayout *layout = new QVBoxLayout(inputDialog);
+    QLabel *post = new QLabel("Enter a post:", inputDialog);
+    QLineEdit *postText = new QLineEdit(inputDialog);
+    layout->addWidget(post);
+    layout->addWidget(postText);
+    QPushButton *submitButton = new QPushButton("Submit", inputDialog);
+    layout->addWidget(submitButton);
+    connect(submitButton, &QPushButton::clicked, [this, inputDialog, postText]() {
+        string post = postText->text().toStdString();
+
+        // Perform your logic with the entered IDs HEREEEE AND PUT THE RESULTS IN THIS resultString
+        QString resultString = QString::fromStdString(post);
+
+
+
+        QDialog *resultDialog = new QDialog(this);
+        resultDialog->setFixedSize(300, 150);
+        resultDialog->setWindowTitle("Mutual between two users");
+        QVBoxLayout *resultLayout = new QVBoxLayout(resultDialog);
+        QLabel *resultLabel = new QLabel(resultString, resultDialog);
+        resultLayout->addWidget(resultLabel);
+        resultDialog->exec();
+        inputDialog->close();
+    });
+    inputDialog->exec();
 }
 
