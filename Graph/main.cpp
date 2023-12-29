@@ -19,8 +19,6 @@ int main()
     Graph userGraph(users.size(),users);
 
     userGraph.buildGraph();
-
-     //Print the adjacency list
     userGraph.printAdjacencyList();
 
     cout<<userGraph.get_mostInfluentialUser()<<endl;
@@ -28,18 +26,11 @@ int main()
     cout<<userGraph.get_mutualFollowers("2","3");
     cout<<userGraph.get_suggestedFollowers("2");
 
+    for(int i=0;i<users.size();i++)
+    {
+        cout<<users[i]->postSearchByWord("solar");
+    }
 
 
-/*
-    // Create a Graph instance
-    Graph userGraph;
-    // Add users to the graph
-
-    // Build the graph using the users vector
-    userGraph.buildGraph(users);
-
-    // Print the graph
-    userGraph.printGraph();
-*/
   return 0;
 }

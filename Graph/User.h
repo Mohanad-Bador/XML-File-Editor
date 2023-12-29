@@ -22,7 +22,7 @@ public:
 
     User(const string& id, const string& name);
     void addFollower(User* follower);
-    void printPost(const Post* post) const;
+    string printPost(const Post* post) const;
     string postSearchByWord(const string& word);
 };
 
