@@ -7,13 +7,14 @@ User::User()
    this->id=" ";
 }
 
-void User::printPost(const Post* post) const {
-    cout << "Post Body: " << post->body << endl;
-    cout << "Topics: ";
+string User::printPost(const Post* post) const {
+    string s;
+    s +="Post Body: " + post->body + '\n' + "Topics: ";
     for (const string& topic : post->topics) {
-        cout << topic << " ";
+        s+=topic + " ";
     }
-    cout << endl;
+    s+= '\n';
+    return s;
 }
 
 void User :: printUser()
@@ -27,31 +28,31 @@ void User :: printUser()
    cout<<"Posts:"<<endl;
    for(int i=0;i<this->posts.size();i++)
    {
-        printPost(posts[i]);
+        cout<<printPost(posts[i]);
    }
 
 }
 
 string User::postSearchByWord(const string& word) {
     bool found = false;  // Flag to check if there's at least one matching post
-
+    string s;
     for (const Post* post : posts) {
         // Check if the search term is present in the post body
         if (post->body.find(word) != string::npos) {
             if (!found) {
-                cout << "Posts for User " << id << " containing " << word << " :" << endl;
+                s+="Posts for User " + id + " containing " + word + " :" + '\n';
                 found = true;  // Set the flag to true after printing the header
             }
-            printPost(post);
+            s+=printPost(post);
         } else {
             // Check if the search term is present in any topic
             for (const string& topic : post->topics) {
                 if (topic.find(word) != string::npos) {
                     if (!found) {
-                        cout << "Posts for User " << id << " containing " << word << " :" << endl;
+                        s+="Posts for User " + id + " containing " + word + " :" + '\n';
                         found = true;  // Set the flag to true after printing the header
                     }
-                    printPost(post);
+                    s+=printPost(post);
                     break; // Break out of the inner loop if a match is found
                 }
             }
@@ -59,10 +60,10 @@ string User::postSearchByWord(const string& word) {
     }
 
     if (!found) {
-        cout<<"No posts found for User "<<id<<" containing "<<word<<endl;
+        s+="No posts found for User "+id+" containing "+word+'\n';
     }
 
-    return "";  // Empty string to indicate success
+    return s;
 }
 
 User::~User() {}

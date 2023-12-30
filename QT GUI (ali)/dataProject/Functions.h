@@ -11,7 +11,7 @@ using namespace std;
 
 inline void ltrim(string& s);
 inline void rtrim(string& s);
-inline void trim(string& s);
+void trim(string& s);
 string replace_str(string str, const string& toReplace, const string& replaceWith);
 string getOpenTag(string t);
 string getClosedTag(string t);

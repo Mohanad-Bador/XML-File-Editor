@@ -15,7 +15,7 @@
 }
 
 // trim from both ends (in place)
- inline void trim(string& s) {
+ void trim(string& s) {
     ltrim(s);
     rtrim(s);
 }

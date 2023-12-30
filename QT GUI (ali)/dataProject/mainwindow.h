@@ -30,6 +30,7 @@
 #include "XMLParser.h"
 #include "User.h"
 #include "Post.h"
+#include "UndoRedoManager.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -77,8 +78,15 @@ private slots:
 
     void on_mostInfluential_clicked();
 
+    void on_undo_clicked();
+
+    void on_redo_clicked();
+
+    void on_Save_xml_clicked();
+
 private:
     Ui::MainWindow *ui;
     void Display_Problematic_XML(const QString& xmlContent, const std::vector<err_data>& errors);
+    void saveTextToXml(const QString &text, const QString &filename);
 };
 #endif // MAINWINDOW_H

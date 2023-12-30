@@ -13,6 +13,7 @@ SOURCES += \
     Graph.cpp \
     MyUniqueCompression.cpp \
     Post.cpp \
+    UndoRedoManager.cpp \
     User.cpp \
     XMLParser.cpp \
     XMLtoTree.cpp \
@@ -31,6 +32,7 @@ HEADERS += \
     MyUniqueCompression.h \
     Post.h \
     Tree.h \
+    UndoRedoManager.h \
     User.h \
     XMLParser.h \
     XMLtoTree.h \
@@ -48,3 +50,6 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    ali.dot.png

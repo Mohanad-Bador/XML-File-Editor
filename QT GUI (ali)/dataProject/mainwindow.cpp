@@ -11,11 +11,38 @@ Graph userGraph(users.size(),users);
 XML_Parser parse_xml;
 MyUniqueCompression xali;
 string compressed ;
+
+UndoRedoManager undoRedoManager;
+
+QString detectedContent;
+QString correctedContent;
+QString minfiedContent;
+QString formattedContent;
+QString jsonContent;
+QString compressedContent;
+QString decompressedContent;
+
+QString textToSave;
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+
     ui->setupUi(this);
+    // Set the main window's palette background color to light green
+    QPalette mainWindowPalette;
+    mainWindowPalette.setColor(QPalette::Window, QColor(144, 238, 144)); // Light green color
+    setPalette(mainWindowPalette);
+
+    // Customize the stylesheet for buttons
+    QString buttonStylesheet = "QPushButton {"
+                               "    background-color: red;"
+                               "    color: white;"
+                               "}";
+
+    // Apply the stylesheet to all QPushButton instances in the main window
+    setStyleSheet(buttonStylesheet);
 }
 
 MainWindow::~MainWindow()
@@ -163,7 +190,7 @@ void MainWindow::on_Enter_XML_File_clicked()
 void MainWindow::on_Correct_Errors_Button_clicked()
 {
     QString xmlcontent = parse_xml.Get_XML_Content();
-    QString correctedContent;
+
     QStringList stringList = xmlcontent.split("\n");
     vector <string> Bcorrection;
     // Convert each QString to std::string
@@ -180,9 +207,9 @@ void MainWindow::on_Correct_Errors_Button_clicked()
     }
     correctedContent = result;
 
+    undoRedoManager.addToUndoStack(correctedContent);
 
-
-
+    textToSave=correctedContent;
 
 
     QLabel *Correct_Errors = new QLabel(this);
@@ -197,11 +224,11 @@ void MainWindow::on_Correct_Errors_Button_clicked()
 void MainWindow::on_Format_Button_clicked()
 {
     QString xmlcontent = parse_xml.Get_XML_Content();
-    QString formattedContent = QString::fromStdString(FORMAT((filePath.toStdString())));
+    formattedContent = QString::fromStdString(FORMAT((filePath.toStdString())));
 
 
-
-
+    textToSave = formattedContent;
+    undoRedoManager.addToUndoStack(formattedContent);
     QLabel *Format = new QLabel(this);
     Format->setText(formattedContent);
     Format->setWordWrap(true);
@@ -214,14 +241,14 @@ void MainWindow::on_Format_Button_clicked()
 void MainWindow::on_Convert_To_Json_clicked()
 {
     QString xmlcontent = parse_xml.Get_XML_Content();
-    QString jsonContent = QString::fromStdString(convert_to_json((filePath.toStdString())));
+    jsonContent = QString::fromStdString(convert_to_json((filePath.toStdString())));
 
 
 
 
+    textToSave = jsonContent;
 
-
-
+    undoRedoManager.addToUndoStack(jsonContent);
     QLabel *Convert_To_Json = new QLabel(this);
     Convert_To_Json->setText(jsonContent);
     Convert_To_Json->setWordWrap(true);
@@ -240,11 +267,11 @@ void MainWindow::on_Save_Json_Button_clicked()
 void MainWindow::on_Minify_Button_clicked()
 {
     QString xmlcontent = parse_xml.Get_XML_Content();
-    QString minfiedContent = minifyS((filePath.toStdString()));
+    minfiedContent = minifyS((filePath.toStdString()));
 
+    undoRedoManager.addToUndoStack(minfiedContent);
 
-
-
+    textToSave = minfiedContent;
 
 
 
@@ -269,12 +296,12 @@ void MainWindow::on_Compress_Button_clicked()
     QString xmlcontent = parse_xml.Get_XML_Content();
     compressed = xali.compressData((xmlcontent.toStdString()));
     //xali.compressData((xmlcontent.toStdString()));
-    QString compressedContent = QString::fromStdString(compressed);
+    compressedContent = QString::fromStdString(compressed);
 
 
+    textToSave = compressedContent;
 
-
-
+    undoRedoManager.addToUndoStack(compressedContent);
 
 
     QLabel *Compress = new QLabel(this);
@@ -290,13 +317,13 @@ void MainWindow::on_Decompress_Button_clicked()
 {
     QString xmlcontent = parse_xml.Get_XML_Content();
 
-    QString decompressedContent = QString::fromStdString(xali.decompressData((compressed)));
+    decompressedContent = QString::fromStdString(xali.decompressData((compressed)));
 
 
+    textToSave = decompressedContent;
 
 
-
-
+    undoRedoManager.addToUndoStack(decompressedContent);
     QLabel *Decompress = new QLabel(this);
     Decompress->setText(decompressedContent);
     Decompress->setWordWrap(true);
@@ -323,6 +350,7 @@ void MainWindow::on_Detect_Error_clicked()
 
     detectedContent = QString::fromStdString(detectionn);
 
+    undoRedoManager.addToUndoStack(detectedContent);
 
     QLabel *Detect = new QLabel(this);
     Detect->setText(detectedContent);
@@ -336,20 +364,70 @@ void MainWindow::on_Detect_Error_clicked()
 
 void MainWindow::on_SocialNetworkAnalysis_clicked()
 {
-    QString xmlcontent = parse_xml.Get_XML_Content();
+    //QString xmlcontent = parse_xml.Get_XML_Content();
+    QString imagePath = "ali.dot.png";  // Adjust the path to your image
+    vector<User*> userrs =parser.parseXML(filePath.QString::toStdString());
+    Graph users(userrs.size(),userrs);
+    users.buildGraph();
+    string result = "digraph Graph {\n\n";
+    result += "\tnode [ shape = \"record\"  color = \"purple\"]\n\n";
+    for(const auto &user : userrs)
+    {
+        result += "\t" + user->id + " [ label = \"{ " + user->name + +" | id = " + user->id +
+                  " }\" ]\n";
+        result += "\t" + user->id + " -> {";
+        //result += "1,2,3";
+        for(size_t i = 0; i < user->followers.size(); i++)
+        {
+            if(i)
+                result += " ,";
+            result += (user->followers[i]->id);
+        }
+        result += "}\n";
+    }
+    result += "}\n\n";
+
+
+    QFile file("ali.dot");
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
+        return;
+    }
+    else{
+    QTextStream out(&file);
+    QString text = QString::fromStdString(result);
+    out << text;
+    file.flush();
+    file.close();
+    }
+    //system("E:");
+    system("dot -Tpng -O ali.dot");
+
+    //QPixmap mypix("E:/ali/DS-Project/QT GUI (ali)/dataProject/ali.dot.png");
+
+    //ui->img->setPixmap(mypix);
+    QPixmap image(imagePath);
+
+    if (image.isNull()) {
+        QMessageBox::warning(this, "Error", "Failed to open the image.");
+    } else {
+        //QMessageBox::information(this, "Image Viewer", "", QMessageBox::NoButton, QMessageBox::NoButton);
+        QMessageBox msgBox;
+        msgBox.setIconPixmap(image.scaled(400, 400, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        msgBox.setWindowTitle("Graph Visualization");
+        msgBox.exec();
+    }
 
 
 
 
-
-    QDialog *newDialog = new QDialog(this);
-    newDialog->setFixedSize(500, 400);
-    newDialog->setWindowTitle("Social Network Analysis");
-    QScrollArea *dataScrollArea = new QScrollArea(newDialog);
-    QLabel *label = new QLabel(xmlcontent, newDialog);
-    dataScrollArea->setWidget(label);
-    dataScrollArea->setWidgetResizable(true);
-    newDialog->exec();
+    // QDialog *newDialog = new QDialog(this);
+    // newDialog->setFixedSize(500, 400);
+    // newDialog->setWindowTitle("Social Network Analysis");
+    // QScrollArea *dataScrollArea = new QScrollArea(newDialog);
+    // QLabel *label = new QLabel(xmlcontent, newDialog);
+    // dataScrollArea->setWidget(label);
+    // dataScrollArea->setWidgetResizable(true);
+    // newDialog->exec();
 }
 
 
@@ -420,7 +498,7 @@ void MainWindow::on_showSuggestions_clicked()
 
         QDialog *resultDialog = new QDialog(this);
         resultDialog->setFixedSize(300, 150);
-        resultDialog->setWindowTitle("Mutual between two users");
+        resultDialog->setWindowTitle("Suggested Followers");
         QVBoxLayout *resultLayout = new QVBoxLayout(resultDialog);
         QLabel *resultLabel = new QLabel(resultString, resultDialog);
         resultLayout->addWidget(resultLabel);
@@ -446,17 +524,29 @@ void MainWindow::on_postSearch_clicked()
     connect(submitButton, &QPushButton::clicked, [this, inputDialog, postText]() {
         string post = postText->text().toStdString();
 
-        // Perform your logic with the entered IDs HEREEEE AND PUT THE RESULTS IN THIS resultString
-        QString resultString = QString::fromStdString(post);
-
-
+        vector<User*> users =parser.parseXML(filePath.QString::toStdString());
+        Graph userGraph(users.size(),users);
+        userGraph.buildGraph();
+        QString postSearch;
+        for(int i=0;i<users.size();i++)
+        {
+            postSearch+= QString ::fromStdString(users[i]->postSearchByWord(post));
+            postSearch+="\n";
+        }
 
         QDialog *resultDialog = new QDialog(this);
-        resultDialog->setFixedSize(300, 150);
-        resultDialog->setWindowTitle("Mutual between two users");
-        QVBoxLayout *resultLayout = new QVBoxLayout(resultDialog);
-        QLabel *resultLabel = new QLabel(resultString, resultDialog);
-        resultLayout->addWidget(resultLabel);
+        resultDialog->setFixedSize(400, 300);
+        resultDialog->setWindowTitle("Post Search");
+        QVBoxLayout *resultDialogLayout = new QVBoxLayout(resultDialog);
+        QScrollArea *scrollArea = new QScrollArea(resultDialog);
+        scrollArea->setWidgetResizable(true);
+        QLabel *resultLabel = new QLabel(postSearch, resultDialog);
+        resultLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop); // Adjust alignment as needed
+        resultLabel->setWordWrap(true);
+        scrollArea->setWidget(resultLabel);
+        scrollArea->setWidgetResizable(true);
+        resultDialogLayout->addWidget(scrollArea);
+        resultDialog->setLayout(resultDialogLayout);
         resultDialog->exec();
         inputDialog->close();
     });
@@ -475,7 +565,7 @@ void MainWindow::on_mostActive_clicked()
 
     QDialog *newDialog = new QDialog(this);
     newDialog->setFixedSize(250, 250); // Increased height to accommodate QLabel
-    newDialog->setWindowTitle("Social Network Analysis");
+    newDialog->setWindowTitle("Most Active");
 
     // Create a QVBoxLayout for the dialog
     QVBoxLayout *mainLayout = new QVBoxLayout(newDialog);
@@ -511,7 +601,7 @@ void MainWindow::on_mostInfluential_clicked()
 
     QDialog *newDialog = new QDialog(this);
     newDialog->setFixedSize(250, 250); // Increased height to accommodate QLabel
-    newDialog->setWindowTitle("Social Network Analysis");
+    newDialog->setWindowTitle("Most Influential");
 
     // Create a QVBoxLayout for the dialog
     QVBoxLayout *mainLayout = new QVBoxLayout(newDialog);
@@ -528,4 +618,62 @@ void MainWindow::on_mostInfluential_clicked()
 
     newDialog->exec();
 }
+
+
+void MainWindow::on_undo_clicked()
+{
+    QString undo = undoRedoManager.undo();
+    QLabel *Undo = new QLabel(this);
+    Undo->setText(undo);
+    Undo->setWordWrap(true);
+
+    ui->scrollArea_2->setWidget(Undo);
+    ui->scrollArea_2->setWidgetResizable(true);
+}
+
+
+void MainWindow::on_redo_clicked()
+{
+    QString redo = undoRedoManager.redo();
+    QLabel *Redo = new QLabel(this);
+    Redo->setText(redo);
+    Redo->setWordWrap(true);
+
+    ui->scrollArea_2->setWidget(Redo);
+    ui->scrollArea_2->setWidgetResizable(true);
+}
+
+
+void MainWindow::on_Save_xml_clicked() {
+    // Assuming you have a QTextEdit named xmlTextEdit in your MainWindow
+
+
+    // Open a file dialog for choosing the save location
+    QString selectedFilePath = QFileDialog::getSaveFileName(this, "Save XML File", QDir::homePath(), "XML Files (*.xml)");
+
+    if (!selectedFilePath.isEmpty()) {
+        // Save the text to the selected file
+        saveTextToXml(textToSave, selectedFilePath);
+    } else {
+        // User canceled the operation
+        QMessageBox::information(this, "Information", "Save operation canceled.");
+    }
+}
+
+void MainWindow::saveTextToXml(const QString &text, const QString &filename) {
+    QFile file(filename);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        // Handle error, e.g., show an error message
+        QMessageBox::critical(this, "Error", "Failed to open file for writing.");
+        return;
+    }
+    QTextStream out(&file);
+    out << "<root>" << text << "</root>";  // You may want to modify this based on your XML structure
+    file.close();
+
+    QMessageBox::information(this, "Information", "Text saved to XML file successfully.");
+
+}
+
 

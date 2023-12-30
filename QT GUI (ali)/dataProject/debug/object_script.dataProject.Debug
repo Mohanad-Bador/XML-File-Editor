@@ -1,0 +1,16 @@
+debug/Functions.o
+debug/Graph.o
+debug/MyUniqueCompression.o
+debug/Post.o
+debug/User.o
+debug/XMLParser.o
+debug/XMLtoTree.o
+debug/consistency.o
+debug/formatting.o
+debug/globals.o
+debug/main.o
+debug/mainwindow.o
+debug/tree.o
+debug/xml_parser.o
+debug/xmltojson.o
+debug/moc_mainwindow.o
