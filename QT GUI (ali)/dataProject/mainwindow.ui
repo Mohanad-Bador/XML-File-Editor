@@ -17,7 +17,7 @@
    <widget class="QPushButton" name="Enter_XML_File">
     <property name="geometry">
      <rect>
-      <x>150</x>
+      <x>130</x>
       <y>550</y>
       <width>141</width>
       <height>29</height>
@@ -30,7 +30,7 @@
    <widget class="QPushButton" name="Decompress_Button">
     <property name="geometry">
      <rect>
-      <x>1072</x>
+      <x>980</x>
       <y>550</y>
       <width>101</width>
       <height>29</height>
@@ -69,7 +69,7 @@
    <widget class="QPushButton" name="upload_xml">
     <property name="geometry">
      <rect>
-      <x>30</x>
+      <x>10</x>
       <y>550</y>
       <width>91</width>
       <height>29</height>
@@ -82,7 +82,7 @@
    <widget class="QPushButton" name="Compress_Button">
     <property name="geometry">
      <rect>
-      <x>980</x>
+      <x>890</x>
       <y>550</y>
       <width>83</width>
       <height>29</height>
@@ -96,7 +96,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>30</y>
+      <y>50</y>
       <width>581</width>
       <height>471</height>
      </rect>
@@ -152,24 +152,11 @@
      <string>Format</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="Save_Json_Button">
-    <property name="geometry">
-     <rect>
-      <x>890</x>
-      <y>550</y>
-      <width>83</width>
-      <height>29</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Save_Json</string>
-    </property>
-   </widget>
    <widget class="QScrollArea" name="scrollArea_2">
     <property name="geometry">
      <rect>
       <x>640</x>
-      <y>30</y>
+      <y>50</y>
       <width>581</width>
       <height>471</height>
      </rect>
@@ -191,9 +178,9 @@
    <widget class="QPushButton" name="Detect_Error">
     <property name="geometry">
      <rect>
-      <x>360</x>
+      <x>340</x>
       <y>550</y>
-      <width>83</width>
+      <width>101</width>
       <height>29</height>
      </rect>
     </property>
@@ -204,7 +191,7 @@
    <widget class="QPushButton" name="SocialNetworkAnalysis">
     <property name="geometry">
      <rect>
-      <x>370</x>
+      <x>40</x>
       <y>590</y>
       <width>191</width>
       <height>29</height>
@@ -217,7 +204,7 @@
    <widget class="QPushButton" name="postSearch">
     <property name="geometry">
      <rect>
-      <x>590</x>
+      <x>670</x>
       <y>590</y>
       <width>131</width>
       <height>29</height>
@@ -230,7 +217,7 @@
    <widget class="QPushButton" name="showSuggestions">
     <property name="geometry">
      <rect>
-      <x>910</x>
+      <x>990</x>
       <y>590</y>
       <width>161</width>
       <height>29</height>
@@ -243,7 +230,7 @@
    <widget class="QPushButton" name="mutualUsers">
     <property name="geometry">
      <rect>
-      <x>752</x>
+      <x>830</x>
       <y>590</y>
       <width>131</width>
       <height>29</height>
@@ -251,6 +238,71 @@
     </property>
     <property name="text">
      <string>mutualUsers</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="mostActive">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>590</y>
+      <width>121</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>mostActive</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="mostInfluential">
+    <property name="geometry">
+     <rect>
+      <x>530</x>
+      <y>590</y>
+      <width>121</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>mostInfluential</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="undo">
+    <property name="geometry">
+     <rect>
+      <x>1030</x>
+      <y>10</y>
+      <width>31</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;-</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="redo">
+    <property name="geometry">
+     <rect>
+      <x>1070</x>
+      <y>10</y>
+      <width>31</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>-&gt;</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Save_xml">
+    <property name="geometry">
+     <rect>
+      <x>1090</x>
+      <y>550</y>
+      <width>83</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>SAVE</string>
     </property>
    </widget>
   </widget>
