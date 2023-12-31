@@ -12,14 +12,12 @@ class Post
 {
 public:
     Post();
-    string getBody();
-    vector<string> getTopics();
-  
-
     string body;
     vector <string> topics;
-    
-      ~Post();
+  
+    string getBody();
+    vector<string> getTopics();
+    ~Post();
 };
 
 #endif

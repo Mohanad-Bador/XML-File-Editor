@@ -7,6 +7,12 @@ User::User()
    this->id=" ";
 }
 
+User::User(const string& id, const string& name) : id(id), name(name) {}
+
+void User::addFollower(User* follower) {
+    followers.push_back(follower);
+}
+
 string User::printPost(const Post* post) const {
     string s;
     s +="Post Body: " + post->body + '\n' + "Topics: ";
@@ -67,9 +73,3 @@ string User::postSearchByWord(const string& word) {
 }
 
 User::~User() {}
-
-User::User(const string& id, const string& name) : id(id), name(name) {}
-
-void User::addFollower(User* follower) {
-    followers.push_back(follower);
-}

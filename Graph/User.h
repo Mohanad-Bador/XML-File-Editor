@@ -11,19 +11,17 @@ class User
 {
 public:
     User();
-
     string name;
     string id;
     vector<User *> followers;
     vector<Post *> posts;
-    void printUser();
-
-    ~User();
 
     User(const string& id, const string& name);
     void addFollower(User* follower);
     string printPost(const Post* post) const;
+    void printUser();
     string postSearchByWord(const string& word);
+    ~User();
 };
 
 #endif

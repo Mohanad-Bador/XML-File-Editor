@@ -6,7 +6,6 @@ Graph::Graph(int numVertices,vector<User*>& users) : adjList(numVertices+1) {
     this->users=users;
 }
 
-
 void Graph::addEdge(User* u, User* v) {
     // Assuming that the User class has an 'id' attribute
     int userId = stoi(u->id);
@@ -26,8 +25,15 @@ void Graph::printAdjacencyList()  {
     }
 }
 
-void Graph::buildGraph(){
+User* Graph::getUserById(const string &userid) {
+    for(User *user:users){
+        if(user->id == userid)
+            return user;
+    }
+    return nullptr;
+}
 
+void Graph::buildGraph() {
     // Adding edges based on followers
     for (int i = 0; i < users.size(); ++i) {
         User* currentUser = users[i];
@@ -36,15 +42,6 @@ void Graph::buildGraph(){
             this->addEdge(currentUser, follower);
         }
     }
-}
-
-User* Graph::getUserById(const string &userid)
-{
-    for(User *user:users){
-        if(user->id == userid)
-            return user;
-    }
-    return nullptr;
 }
 
 vector<User*> Graph::findMostInfluentialUser() {
@@ -61,14 +58,11 @@ vector<User*> Graph::findMostInfluentialUser() {
             mostInfluentialUsers.push_back(getUserById(to_string(i)));
         }
     }
-
     return mostInfluentialUsers;
 }
 
-
 vector<User*> Graph::findMostActiveUser() {
     vector<int> activity(adjList.size(), 0);
-
     // Calculate activity for each user
     for (int i = 0; i < adjList.size(); i++) {
         for (const User* follower : adjList[i]) {
@@ -76,7 +70,6 @@ vector<User*> Graph::findMostActiveUser() {
             activity[loc]++;
         }
     }
-
     // Find the maximum activity
     int maxActivity = 0;
     for (int i = 0; i < activity.size(); i++) {
@@ -84,7 +77,6 @@ vector<User*> Graph::findMostActiveUser() {
             maxActivity = activity[i];
         }
     }
-
     // Collect users with maximum activity
     vector<User*> mostActiveUsers;
     for (int i = 0; i < activity.size(); i++) {
@@ -96,9 +88,7 @@ vector<User*> Graph::findMostActiveUser() {
     return mostActiveUsers;
 }
 
-
-vector<User*> Graph::findMutualFollowers(const string& ID1, const string& ID2)
-{
+vector<User*> Graph::findMutualFollowers(const string& ID1, const string& ID2) {
     User* user1 = getUserById(ID1);
     User* user2 = getUserById(ID2);
     vector<User*> mutual_followers;
@@ -116,15 +106,17 @@ vector<User*> Graph::findMutualFollowers(const string& ID1, const string& ID2)
     return mutual_followers;
 }
 
-
-vector<User*> Graph::suggest_followers(const string&id)
-{
+vector<User*> Graph::suggest_followers(const string&id) {
     vector<bool> v(this->users.size()+1,false);
     User* user=getUserById(id);
     vector<User*> followers=adjList[stoi(user->id)];
     vector<User*> suggested_followers;
 
     v[stoi(id)]=true;
+    for(User* follower:followers){
+        User* u=getUserById(follower->id);
+        v[stoi(u->id)]=true;
+    }
     for(User* follower:followers)
     {
        User* u=getUserById(follower->id);
@@ -139,8 +131,7 @@ vector<User*> Graph::suggest_followers(const string&id)
 	return suggested_followers;
 }
 
-string Graph:: get_mostInfluentialUser()
-{
+string Graph:: get_mostInfluentialUser() {
     vector<User*> mostInfluentialUsers = findMostInfluentialUser();
 
     if (mostInfluentialUsers.empty()) {
@@ -152,7 +143,6 @@ string Graph:: get_mostInfluentialUser()
     }
     return s;
 }
-
 
 string Graph::get_mostActiveUser() {
     vector<User*> mostActiveUsers = findMostActiveUser();
@@ -169,21 +159,7 @@ string Graph::get_mostActiveUser() {
     return s;
 }
 
-string Graph:: get_suggestedFollowers(const string& ID)
-{
-  vector<User*> users=suggest_followers(ID);
-  string s;
-  for(User* user:users)
-  {
-      s+="Suggested Follower: " + user->name + " ID : " + user->id +'\n';
-  }
-  if(s.empty())
-    return "NO Suggested Followers";
-  else
-      return s;
-}
-string Graph:: get_mutualFollowers(const string& ID1,const string& ID2)
-{
+string Graph:: get_mutualFollowers(const string& ID1,const string& ID2) {
   vector<User*> users=findMutualFollowers(ID1,ID2);
   string s;
   for(User* user:users)
@@ -196,4 +172,17 @@ string Graph:: get_mutualFollowers(const string& ID1,const string& ID2)
       return s;
 }
 
+string Graph:: get_suggestedFollowers(const string& ID){
+  vector<User*> users=suggest_followers(ID);
+  string s;
+  for(User* user:users)
+  {
+      s+="Suggested Follower: " + user->name + " ID : " + user->id +'\n';
+  }
+  if(s.empty())
+    return "NO Suggested Followers";
+  else
+      return s;
+}
 
+Graph::~Graph(){}
