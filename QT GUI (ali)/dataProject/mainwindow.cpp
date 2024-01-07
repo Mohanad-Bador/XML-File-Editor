@@ -31,18 +31,18 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->setupUi(this);
     // Set the main window's palette background color to light green
-    QPalette mainWindowPalette;
-    mainWindowPalette.setColor(QPalette::Window, QColor(144, 238, 144)); // Light green color
-    setPalette(mainWindowPalette);
+    // QPalette mainWindowPalette;
+    // mainWindowPalette.setColor(QPalette::Window, QColor(144, 238, 144)); // Light green color
+    // setPalette(mainWindowPalette);
 
-    // Customize the stylesheet for buttons
-    QString buttonStylesheet = "QPushButton {"
-                               "    background-color: red;"
-                               "    color: white;"
-                               "}";
+    // // Customize the stylesheet for buttons
+    // QString buttonStylesheet = "QPushButton {"
+    //                            "    background-color: red;"
+    //                            "    color: white;"
+    //                            "}";
 
-    // Apply the stylesheet to all QPushButton instances in the main window
-    setStyleSheet(buttonStylesheet);
+    // // Apply the stylesheet to all QPushButton instances in the main window
+    // setStyleSheet(buttonStylesheet);
 }
 
 MainWindow::~MainWindow()
@@ -258,10 +258,7 @@ void MainWindow::on_Convert_To_Json_clicked()
 }
 
 
-void MainWindow::on_Save_Json_Button_clicked()
-{
 
-}
 
 
 void MainWindow::on_Minify_Button_clicked()
@@ -362,73 +359,74 @@ void MainWindow::on_Detect_Error_clicked()
 }
 
 
-void MainWindow::on_SocialNetworkAnalysis_clicked()
-{
-    //QString xmlcontent = parse_xml.Get_XML_Content();
-    QString imagePath = "ali.dot.png";  // Adjust the path to your image
-    vector<User*> userrs =parser.parseXML(filePath.QString::toStdString());
-    Graph users(userrs.size(),userrs);
-    users.buildGraph();
-    string result = "digraph Graph {\n\n";
-    result += "\tnode [ shape = \"record\"  color = \"purple\"]\n\n";
-    for(const auto &user : userrs)
-    {
-        result += "\t" + user->id + " [ label = \"{ " + user->name + +" | id = " + user->id +
-                  " }\" ]\n";
-        result += "\t" + user->id + " -> {";
-        //result += "1,2,3";
-        for(size_t i = 0; i < user->followers.size(); i++)
-        {
-            if(i)
-                result += " ,";
-            result += (user->followers[i]->id);
-        }
-        result += "}\n";
-    }
-    result += "}\n\n";
+// void MainWindow::on_SocialNetworkAnalysis_clicked()
+// {
+//     //QString xmlcontent = parse_xml.Get_XML_Content();
+//     QString imagePath = "ali.dot.png";  // Adjust the path to your image
+//     vector<User*> userrs =parser.parseXML(filePath.QString::toStdString());
+//     Graph users(userrs.size(),userrs);
+//     users.buildGraph();
+//     // string result = "digraph Graph {\n\n";
+//     // result += "\tnode [ shape = \"record\"  color = \"purple\"]\n\n";
+//     // for(const auto &user : userrs)
+//     // {
+//     //     result += "\t" + user->id + " [ label = \"{ " + user->name + +" | id = " + user->id +
+//     //               " }\" ]\n";
+//     //     result += "\t" + user->id + " -> {";
+//     //     //result += "1,2,3";
+//     //     for(size_t i = 0; i < user->followers.size(); i++)
+//     //     {
+//     //         if(i)
+//     //             result += " ,";
+//     //         result += (user->followers[i]->id);
+//     //     }
+//     //     result += "}\n";
+//     // }
+//     // result += "}\n\n";
 
 
-    QFile file("ali.dot");
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
-        return;
-    }
-    else{
-    QTextStream out(&file);
-    QString text = QString::fromStdString(result);
-    out << text;
-    file.flush();
-    file.close();
-    }
-    //system("E:");
-    system("dot -Tpng -O ali.dot");
+//     // QFile file("ali.dot");
+//     // if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
+//     //     return;
+//     // }
+//     // else{
+//     // QTextStream out(&file);
+//     // QString text = QString::fromStdString(result);
+//     // out << text;
+//     // file.flush();
+//     // file.close();
+//     // }
+//     // //system("E:");
+//     // system("dot -Tpng -O ali.dot");
 
-    //QPixmap mypix("E:/ali/DS-Project/QT GUI (ali)/dataProject/ali.dot.png");
+//     // //QPixmap mypix("E:/ali/DS-Project/QT GUI (ali)/dataProject/ali.dot.png");
 
-    //ui->img->setPixmap(mypix);
-    QPixmap image(imagePath);
-
-    if (image.isNull()) {
-        QMessageBox::warning(this, "Error", "Failed to open the image.");
-    } else {
-        //QMessageBox::information(this, "Image Viewer", "", QMessageBox::NoButton, QMessageBox::NoButton);
-        QMessageBox msgBox;
-        msgBox.setIconPixmap(image.scaled(400, 400, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-        msgBox.setWindowTitle("Graph Visualization");
-        msgBox.exec();
-    }
+//     // //ui->img->setPixmap(mypix);
+//     // QPixmap image(imagePath);
 
 
+//     if (image.isNull()) {
+//         QMessageBox::warning(this, "Error", "Failed to open the image.");
+//     } else {
+//         //QMessageBox::information(this, "Image Viewer", "", QMessageBox::NoButton, QMessageBox::NoButton);
+//         QMessageBox msgBox;
+//         msgBox.setIconPixmap(image.scaled(400, 400, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+//         msgBox.setWindowTitle("Graph Visualization");
+//         msgBox.exec();
+//     }
 
 
-    // QDialog *newDialog = new QDialog(this);
-    // newDialog->setFixedSize(500, 400);
-    // newDialog->setWindowTitle("Social Network Analysis");
-    // QScrollArea *dataScrollArea = new QScrollArea(newDialog);
-    // QLabel *label = new QLabel(xmlcontent, newDialog);
-    // dataScrollArea->setWidget(label);
-    // dataScrollArea->setWidgetResizable(true);
-    // newDialog->exec();
-}
+
+
+//     // QDialog *newDialog = new QDialog(this);
+//     // newDialog->setFixedSize(500, 400);
+//     // newDialog->setWindowTitle("Social Network Analysis");
+//     // QScrollArea *dataScrollArea = new QScrollArea(newDialog);
+//     // QLabel *label = new QLabel(xmlcontent, newDialog);
+//     // dataScrollArea->setWidget(label);
+//     // dataScrollArea->setWidgetResizable(true);
+//     // newDialog->exec();
+// }
 
 
 void MainWindow::on_mutualUsers_clicked()
@@ -675,5 +673,125 @@ void MainWindow::saveTextToXml(const QString &text, const QString &filename) {
     QMessageBox::information(this, "Information", "Text saved to XML file successfully.");
 
 }
+void MainWindow::on_SocialNetworkAnalysis_clicked()
+{
+    QString imagePath = "ali.dot.png";  // Adjust the path to your image
+    vector<User*> userrs = parser.parseXML(filePath.QString::toStdString());
+
+    Graph users(userrs.size(), userrs);
+    users.buildGraph();
+    QVector<User*> qtUsers(userrs.begin(), userrs.end());
+
+    // Create a new QGraphicsView and QGraphicsScene
+    QGraphicsScene* graphScene = new QGraphicsScene(this);
+    graphScene->setSceneRect(0, 0, 800, 600);  // Set the size of the scene
+
+    QGraphicsView* graphView = new QGraphicsView(graphScene);
+    graphView->setRenderHint(QPainter::Antialiasing);
+
+    // Draw the graph on the QGraphicsView
+    drawGraph(graphScene, qtUsers);
+
+    // Create a new QDialog to display the QGraphicsView
+    QDialog* graphDialog = new QDialog(this);
+    graphDialog->setWindowTitle("Social Network Analysis");
+
+    QVBoxLayout* layout = new QVBoxLayout(graphDialog);
+    layout->addWidget(graphView);
+    qDebug() << "Before opening graphDialog";
+    graphDialog->show();
+    qDebug() << "After opening graphDialog";
+}
+
+
+void MainWindow::drawGraph(QGraphicsScene* scene, const QVector<User*>& users)
+{
+    if (scene == nullptr) {
+        qDebug() << "Error: QGraphicsScene is null in drawGraph.";
+        return;
+    }
+
+    const qreal nodeWidth = 110;
+    const qreal nodeHeight = 50;
+    QVector<QGraphicsRectItem*> nodeItems;
+
+    QVector<QPointF> nodePositions;
+
+    // Determine node positions based on the number of users
+    int numUsers = users.size();
+    if (numUsers > 0) {
+        qreal angleIncrement = 360.0 / numUsers;
+        qreal currentAngle = 0;
+
+        for (int i = 0; i < numUsers; ++i) {
+            qreal x = 400 + 200 * qCos(qDegreesToRadians(currentAngle));
+            qreal y = 300 + 200 * qSin(qDegreesToRadians(currentAngle));
+            nodePositions.append(QPointF(x, y));
+            currentAngle += angleIncrement;
+        }
+    }
+
+    for (int i = 0; i < numUsers; ++i) {
+        QGraphicsRectItem* nodeItem = scene->addRect(0, 0, nodeWidth, nodeHeight);
+        if (nodeItem == nullptr) {
+            qDebug() << "Error: Failed to create QGraphicsRectItem.";
+            return;
+        }
+
+        nodeItem->setPos(nodePositions[i]);
+
+        QGraphicsTextItem* textItem = scene->addText(QString("%1\n%2").arg(QString::fromStdString(users[i]->name)).arg(QString::fromStdString(users[i]->id)));
+        if (textItem == nullptr) {
+            qDebug() << "Error: Failed to create QGraphicsTextItem.";
+            return;
+        }
+
+        textItem->setPos(nodeItem->pos() + QPointF(5, 5));
+
+        nodeItems.append(nodeItem);
+    }
+
+    // Create edges (arrows)
+    for (int i = 0; i < users.size(); ++i) {
+        for (const auto& follower : users[i]->followers) {
+            int followerIndex = -1; // Initialize to -1 to indicate not found
+
+            // Find the follower in the users vector based on id
+            for (int j = 0; j < users.size(); ++j) {
+                if (follower->id == users[j]->id) {
+                    followerIndex = j;
+                    break;  // Follower found, exit the loop
+                }
+            }
+
+            if (followerIndex != -1 && followerIndex < nodeItems.size()) {
+                // Calculate the closest points on the rectangles for entering and leaving
+                QPointF startCenter = nodeItems[i]->mapToScene(nodeWidth / 2, nodeHeight );
+                QPointF endCenter = nodeItems[followerIndex]->mapToScene(nodeWidth / 2, nodeHeight );
+
+                // Create arrow
+                QGraphicsLineItem* edgeItem = new QGraphicsLineItem(QLineF(startCenter, endCenter));
+                edgeItem->setPen(QPen(Qt::gray));
+                scene->addItem(edgeItem);
+
+                // Create arrowhead
+                QGraphicsPolygonItem* arrowHead = new QGraphicsPolygonItem(QPolygonF() << QPointF(-5, 0) << QPointF(5, 0) << QPointF(0, 10));
+                arrowHead->setPos(endCenter);
+                arrowHead->setRotation(QLineF(endCenter, startCenter).angle());
+                arrowHead->setBrush(QBrush(Qt::blue));
+
+                scene->addItem(arrowHead);
+            } else {
+                qDebug() << "Warning: Follower not found in users vector.";
+            }
+        }
+    }
+}
+
+
+
+
+
+
 
 

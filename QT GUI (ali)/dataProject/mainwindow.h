@@ -31,6 +31,11 @@
 #include "User.h"
 #include "Post.h"
 #include "UndoRedoManager.h"
+#include <QGraphicsView>
+#include <QGraphicsRectItem>
+#include <QGraphicsLineItem>
+#include <QGraphicsTextItem>
+#include <QRandomGenerator>
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -55,8 +60,6 @@ private slots:
     void on_Format_Button_clicked();
 
     void on_Convert_To_Json_clicked();
-
-    void on_Save_Json_Button_clicked();
 
     void on_Minify_Button_clicked();
 
@@ -88,5 +91,6 @@ private:
     Ui::MainWindow *ui;
     void Display_Problematic_XML(const QString& xmlContent, const std::vector<err_data>& errors);
     void saveTextToXml(const QString &text, const QString &filename);
+    void drawGraph(QGraphicsScene* scene, const QVector<User*>& users);
 };
 #endif // MAINWINDOW_H
