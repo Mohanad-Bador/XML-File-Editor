@@ -118,6 +118,11 @@ vector<User*> Graph::suggest_followers(const string&id)
     v[stoi(id)]=true;
     for(User* follower:followers)
     {
+        User* u=getUserById(follower->id);
+        v[stoi(u->id)]=true;
+    }
+    for(User* follower:followers)
+    {
        User* u=getUserById(follower->id);
        vector<User *> followers_of_followers=adjList[stoi(u->id)];
        for(User* f:followers_of_followers){

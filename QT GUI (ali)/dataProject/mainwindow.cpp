@@ -49,62 +49,105 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-
 void MainWindow::on_upload_xml_clicked()
 {
-      filePath = QFileDialog::getOpenFileName(this, "Choose an XML file", QString(), "XML Files (*.xml)");
-
+    filePath = QFileDialog::getOpenFileName(this, "Choose an XML file", QString(), "XML Files (*.xml)");
 
     if (!filePath.isEmpty()) {
         QFile file(filePath);
 
-
-
         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             QTextStream in(&file);
+            QString numberedXmlContent;
+
+            int lineNumber = 1;
             while (!in.atEnd()) {
                 QString line = in.readLine();
 
                 // Remove spaces from the line
                 line.remove(' ');
 
-                xml_file.push_back(line);
+                // Append line number and content to the result string
+                numberedXmlContent += QString::number(lineNumber) + ": " + line + "\n";
+
+                lineNumber++;
             }
-            file.close();
-        }
-        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            QString xmlContent = QTextStream(&file).readAll();
+
             file.close();
 
-            // Set the XML content in the parser
-            parse_xml.Set_XML_Content(xmlContent);
+            // Create a QLabel with the numbered content
+            QLabel *XML_File = new QLabel(this);
+            XML_File->setText(numberedXmlContent);
+            XML_File->setWordWrap(true);
 
-            // Check consistency and handle the result
-            if (parse_xml.Check_Consistency()) {
-                // XML is consistent, show in a new scroll area
-                QLabel *XML_File = new QLabel(this);
-                XML_File->setText(xmlContent);
-                XML_File->setWordWrap(true);
-
-                ui->scrollArea_1->setWidget(XML_File);
-                ui->scrollArea_1->setWidgetResizable(true);
-            } else {
-                QStringList stringList = xmlContent.split("\n");
-                vector <string> Bdetection;
-                // Convert each QString to std::string
-                for (const QString& str : stringList) {
-                    Bdetection.push_back(str.toStdString());
-                }
-                vector <err_data> errors = detectError(Bdetection);
-                Display_Problematic_XML(xmlContent, errors);
-            }
+            // Set the QLabel as the widget in the QScrollArea
+            ui->scrollArea_1->setWidget(XML_File);
+            ui->scrollArea_1->setWidgetResizable(true);
         } else {
             qDebug() << "Error opening XML file";
         }
     }
-
-
 }
+
+// void MainWindow::on_upload_xml_clicked()
+// {
+//       filePath = QFileDialog::getOpenFileName(this, "Choose an XML file", QString(), "XML Files (*.xml)");
+
+
+//     if (!filePath.isEmpty()) {
+//         QFile file(filePath);
+
+
+
+//         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+//             QTextStream in(&file);
+//             while (!in.atEnd()) {
+//                 QString line = in.readLine();
+
+//                 // Remove spaces from the line
+//                 line.remove(' ');
+
+//                 xml_file.push_back(line);
+//             }
+//             file.close();
+//         }
+//         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+//             QString xmlContent = QTextStream(&file).readAll();
+//             file.close();
+
+//             // Set the XML content in the parser
+//             parse_xml.Set_XML_Content(xmlContent);
+//             QLabel *XML_File = new QLabel(this);
+//             ui->scrollArea_1->setWidget(XML_File);
+//             ui->scrollArea_1->setWidgetResizable(true);
+//             XML_File->setText(xmlContent);
+//             XML_File->setWordWrap(true);
+//             // Check consistency and handle the result
+//             // if (parse_xml.Check_Consistency()) {
+//             //     // XML is consistent, show in a new scroll area
+//             //     QLabel *XML_File = new QLabel(this);
+//             //     XML_File->setText(xmlContent);
+//             //     XML_File->setWordWrap(true);
+
+//             //     ui->scrollArea_1->setWidget(XML_File);
+//             //     ui->scrollArea_1->setWidgetResizable(true);
+//             // } else {
+//             //     QStringList stringList = xmlContent.split("\n");
+//             //     vector <string> Bdetection;
+//             //     // Convert each QString to std::string
+//             //     for (const QString& str : stringList) {
+//             //         Bdetection.push_back(str.toStdString());
+//             //     }
+//             //     vector <err_data> errors = detectError(Bdetection);
+//             //     Display_Problematic_XML(xmlContent, errors);
+//             // // }
+//         } else {
+//             qDebug() << "Error opening XML file";
+//         }
+//     }
+
+
+// }
 
 
 void MainWindow::Display_Problematic_XML(const QString& xmlContent, const std::vector<err_data>& errors) {
@@ -366,43 +409,43 @@ void MainWindow::on_Detect_Error_clicked()
 //     vector<User*> userrs =parser.parseXML(filePath.QString::toStdString());
 //     Graph users(userrs.size(),userrs);
 //     users.buildGraph();
-//     // string result = "digraph Graph {\n\n";
-//     // result += "\tnode [ shape = \"record\"  color = \"purple\"]\n\n";
-//     // for(const auto &user : userrs)
-//     // {
-//     //     result += "\t" + user->id + " [ label = \"{ " + user->name + +" | id = " + user->id +
-//     //               " }\" ]\n";
-//     //     result += "\t" + user->id + " -> {";
-//     //     //result += "1,2,3";
-//     //     for(size_t i = 0; i < user->followers.size(); i++)
-//     //     {
-//     //         if(i)
-//     //             result += " ,";
-//     //         result += (user->followers[i]->id);
-//     //     }
-//     //     result += "}\n";
-//     // }
-//     // result += "}\n\n";
+//     string result = "digraph Graph {\n\n";
+//     result += "\tnode [ shape = \"record\"  color = \"purple\"]\n\n";
+//     for(const auto &user : userrs)
+//     {
+//         result += "\t" + user->id + " [ label = \"{ " + user->name + +" | id = " + user->id +
+//                   " }\" ]\n";
+//         result += "\t" + user->id + " -> {";
+//         //result += "1,2,3";
+//         for(size_t i = 0; i < user->followers.size(); i++)
+//         {
+//             if(i)
+//                 result += " ,";
+//             result += (user->followers[i]->id);
+//         }
+//         result += "}\n";
+//     }
+//     result += "}\n\n";
 
 
-//     // QFile file("ali.dot");
-//     // if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
-//     //     return;
-//     // }
-//     // else{
-//     // QTextStream out(&file);
-//     // QString text = QString::fromStdString(result);
-//     // out << text;
-//     // file.flush();
-//     // file.close();
-//     // }
-//     // //system("E:");
-//     // system("dot -Tpng -O ali.dot");
+//     QFile file("ali.dot");
+//     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
+//         return;
+//     }
+//     else{
+//     QTextStream out(&file);
+//     QString text = QString::fromStdString(result);
+//     out << text;
+//     file.flush();
+//     file.close();
+//     }
+//     //system("E:");
+//     system("dot -Tpng -O ali.dot");
 
-//     // //QPixmap mypix("E:/ali/DS-Project/QT GUI (ali)/dataProject/ali.dot.png");
+//     //QPixmap mypix("E:/ali/DS-Project/QT GUI (ali)/dataProject/ali.dot.png");
 
-//     // //ui->img->setPixmap(mypix);
-//     // QPixmap image(imagePath);
+//     //ui->img->setPixmap(mypix);
+//     QPixmap image(imagePath);
 
 
 //     if (image.isNull()) {
